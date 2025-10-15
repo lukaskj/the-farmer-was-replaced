@@ -1,15 +1,13 @@
 import utils
 
 def start(maxX, maxY):
-  # while True:
-  startTime = get_time()
   utils.move_to(0, 0)
+  startTime = get_time()
   _plant(maxX, maxY)
   _sort_cols(maxX, maxY)
   _sort_rows(maxX, maxY)
-  harvested = _harvest()
-  quick_print("Harvested " + str(harvested) + " cacti in " + str(get_time() - startTime) + " seconds")
-  utils.move_to(0, 0)
+  
+  return _harvest()
 
 def _plant(maxX, maxY):
   seed = Entities.Cactus

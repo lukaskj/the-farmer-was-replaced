@@ -1,26 +1,21 @@
 import utils
 
 def start(seed, maxW, maxH, item = None):
-  totalHarvested = 0
-  totalTime = 0
   itemToHarvest = utils.seed_to_item(seed)
   if not seed:
     quick_print("No seed selected!")
     return
   
   addFertilizer = num_items(Items.Weird_Substance) < 5000
-  startTime = get_time()
   _plant(seed, maxW, maxH, item, addFertilizer)
+  
   startAmount = num_items(itemToHarvest)
+  
   _harvest(maxW, maxH, seed)
-  finalAmount = num_items(itemToHarvest)
-  iterationTime = get_time() - startTime
-  iterationHarvested = finalAmount - startAmount
-  quick_print("Harvested " + str(iterationHarvested) + " " + str(seed) + " in " + str(iterationTime) + " seconds")
+  
 
-  totalHarvested += iterationHarvested
-  totalTime += iterationTime  
-  quick_print("Total Harvested: " + str(totalHarvested) + " " + str(seed) + " in " + str(totalTime) + " seconds")
+  return num_items(itemToHarvest) - startAmount
+  
   
 
 def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
@@ -65,8 +60,6 @@ def _harvest(maxW, maxH, seed):
       notHarvested.append(utils.get_pos())
     x, y = utils.get_next_pos(maxW, maxH)
     utils.move_to(x, y)
-  # quick_print("Not harvested: " + str(len(notHarvested)) + " plots: " + str(notHarvested))
-  # quick_print("")
 
   # Loop to harvest not harvested plots
   while harvestedPlots < totalPlots:

@@ -23,6 +23,7 @@ def start(maxX, maxY):
 
     utils.move_to(nextX, nextY)
   
+  before = num_items(Items.Power)
   utils.sort(sunflowerPetals, compare)
   for i in range(len(sunflowerPetals)):
     x, y, _ = sunflowerPetals[i]
@@ -30,10 +31,11 @@ def start(maxX, maxY):
     if not can_harvest():
       utils.wait_for(can_harvest)
     harvest()
+  return num_items(Items.Power) - before
     
 
 if __name__ == "__main__":
   utils.move_to(0, 0)
-  x = 5
+  x = 10
   y = 5
   start(x, y)

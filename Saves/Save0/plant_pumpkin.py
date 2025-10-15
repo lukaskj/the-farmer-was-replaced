@@ -67,6 +67,7 @@ def start(maxW, maxH):
   global totalGrown
   global addFertilizer
   harvested = False
+  totalHarvested = 0
   while not harvested:
     # addFertilizer = num_items(Items.Weird_Substance) < 100 and num_items(Items.Fertilizer) > 100
     quick_print("Add fertilizer: " + str(addFertilizer))
@@ -79,8 +80,9 @@ def start(maxW, maxH):
       totalGrown = 0
       harvest()
       harvested = True
-      after = num_items(Items.Pumpkin)
-      quick_print("Harvested " + str(after - before) + " pumpkins!")
+      totalHarvested += num_items(Items.Pumpkin) - before
+      
+  return totalHarvested
 
 
 if __name__ == "__main__":
