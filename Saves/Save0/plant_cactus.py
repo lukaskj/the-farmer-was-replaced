@@ -1,21 +1,20 @@
 import utils
 
-def start(runs, maxX, maxY):
+def start(maxX, maxY):
   # while True:
-  for _ in range(runs):
-    startTime = get_time()
-    utils.move_to(0, 0)
-    _plant(maxX, maxY)
-    _sort_cols(maxX, maxY)
-    _sort_rows(maxX, maxY)
-    harvested = _harvest()
-    quick_print("Harvested " + str(harvested) + " cacti in " + str(get_time() - startTime) + " seconds")
-    utils.move_to(0, 0)
+  startTime = get_time()
+  utils.move_to(0, 0)
+  _plant(maxX, maxY)
+  _sort_cols(maxX, maxY)
+  _sort_rows(maxX, maxY)
+  harvested = _harvest()
+  quick_print("Harvested " + str(harvested) + " cacti in " + str(get_time() - startTime) + " seconds")
+  utils.move_to(0, 0)
 
 def _plant(maxX, maxY):
   seed = Entities.Cactus
   for _ in range(maxX * maxY):
-    x, y = utils.get_pos_with_next(maxX, maxY)
+    x, y = utils.get_next_pos(maxX, maxY)
     
     souldTill, _ = utils.get_ground_to_plant(seed)
     if souldTill:
@@ -82,7 +81,8 @@ if __name__ == "__main__":
   runs = 1
   maxX = get_world_size()
   maxY = get_world_size()
-  maxX = 4
+  maxX = 3
   maxY = 4
   seed = Entities.Cactus
-  start(runs, maxX, maxY)
+  for _ in range(runs):
+    start(maxX, maxY)

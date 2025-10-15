@@ -84,8 +84,8 @@ def start(maxW, maxH):
 
 
 if __name__ == "__main__":
-  maxW2 = 10
-  maxH2 = 10
+  maxW2 = 6
+  maxH2 = 6
   start(maxW2, maxH2)
   # clear()
   # harvest()

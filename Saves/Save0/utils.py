@@ -3,29 +3,35 @@ from globals import w, h, SEEDS_TO_GROUND, ITEM_TO_SEED, SEED_TO_ITEM
 def is_even(n):
   return n % 2 == 0
 
-def harvest_column():
-  for _ in range(get_world_size()):
-    harvest()
-    move(North)
-
 def get_pos():
   return get_pos_x(), get_pos_y()
 
 def get_pos_with_next(maxX = None, maxY = None):
-  nextX, nextY = get_next_pos(maxX, maxY)
-  return nextX, nextY
+  curX, curY = get_pos()
+  nextX, nextY = get_next_pos(maxX, maxY, curX, curY)
+  return nextX, nextY, curX, curY
 
-def get_next_pos(maxW = None, maxH = None):
+def get_next_pos(maxW = None, maxH = None, curX = None, curY = None):
   global w
   global h
-  x, y = get_pos()
+  if curX == None or curY == None:
+    x, y = get_pos()
+  else:
+     x, y = curX, curY
   if maxW == None or maxH == None:
     maxW = w
     maxH = h
-  nextX = (x + 1) % maxW
+
+  nextX = x + 1
   nextY = y
-  if nextX == 0:
-    nextY = (y + 1) % maxH
+  if nextX >= maxW:
+    nextX = 0
+    nextY = y + 1
+  
+  # If we've gone past maxH, stay at current position
+  if nextY >= maxH:
+    nextX, nextY = x, y
+    
   return nextX, nextY
 
 # function to sort a list of tuples by x-coordinate only, using an optimized bubble sort
@@ -100,7 +106,54 @@ def sleep(secondsToWait):
     elapsed = get_time() - start
   return
 
-def wait_for(fnc):
-  while not fnc():
-    pass
+def wait_for(fnc, max = 1000000000):
+  i = 0
+  while not fnc() and i < max:
+    i += 1
   return True
+
+
+# Sort - Quicksort
+def __default_compare(a, b):
+  return a <= b
+
+def _partition(arr, low, high, compare_fn):
+  # Choose rightmost element as pivot
+  pivot = arr[high]
+  # Pointer for greater element
+  i = low - 1
+  
+  # Compare each element with pivot using compare_fn
+  for j in range(low, high):
+    if compare_fn(arr[j], pivot):
+      # If element should come before pivot according to compare_fn
+      # swap it with the greater element pointed by i
+      i += 1
+      arr[i], arr[j] = arr[j], arr[i]
+  
+  # Swap the pivot element with the greater element specified by i
+  arr[i + 1], arr[high] = arr[high], arr[i + 1]
+  # Return the partition point
+  return i + 1
+
+def __quicksort_helper(arr, low, high, compare_fn):
+  if low < high:
+    # Find pivot element such that
+    # elements that compare true are on the left
+    # elements that compare false are on the right
+    pi = _partition(arr, low, high, compare_fn)
+    
+    # Recursively sort elements before and after partition
+    __quicksort_helper(arr, low, pi - 1, compare_fn)
+    __quicksort_helper(arr, pi + 1, high, compare_fn)
+
+def sort(list, compare_fn=None):
+  if not list:
+    return list
+  
+  # Use default comparison if none provided
+  if compare_fn == None:
+    compare_fn = __default_compare
+    
+  __quicksort_helper(list, 0, len(list) - 1, compare_fn)
+  return list

@@ -1,26 +1,26 @@
 import utils
 
-def start(seed, runs, maxW, maxH, item = None):
+def start(seed, maxW, maxH, item = None):
   totalHarvested = 0
   totalTime = 0
   itemToHarvest = utils.seed_to_item(seed)
   if not seed:
     quick_print("No seed selected!")
     return
-  for _ in range(runs):
-    addFertilizer = num_items(Items.Weird_Substance) < 5000
-    startTime = get_time()
-    _plant(seed, maxW, maxH, item, addFertilizer)
-    startAmount = num_items(itemToHarvest)
-    _harvest(maxW, maxH, seed)
-    finalAmount = num_items(itemToHarvest)
-    iterationTime = get_time() - startTime
-    iterationHarvested = finalAmount - startAmount
-    quick_print("Harvested " + str(iterationHarvested) + " " + str(seed) + " in " + str(iterationTime) + " seconds")
+  
+  addFertilizer = num_items(Items.Weird_Substance) < 5000
+  startTime = get_time()
+  _plant(seed, maxW, maxH, item, addFertilizer)
+  startAmount = num_items(itemToHarvest)
+  _harvest(maxW, maxH, seed)
+  finalAmount = num_items(itemToHarvest)
+  iterationTime = get_time() - startTime
+  iterationHarvested = finalAmount - startAmount
+  quick_print("Harvested " + str(iterationHarvested) + " " + str(seed) + " in " + str(iterationTime) + " seconds")
 
-    totalHarvested += iterationHarvested
-    totalTime += iterationTime  
-  quick_print("Total Harvested in " + str(runs) + " runs: " + str(totalHarvested) + " " + str(seed) + " in " + str(totalTime) + " seconds")
+  totalHarvested += iterationHarvested
+  totalTime += iterationTime  
+  quick_print("Total Harvested: " + str(totalHarvested) + " " + str(seed) + " in " + str(totalTime) + " seconds")
   
 
 def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
@@ -28,7 +28,7 @@ def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
   utils.move_to(0, 0)
   totalPlots = maxW * maxH
   for _ in range(totalPlots):
-    x, y = utils.get_pos_with_next(maxW, maxH)
+    x, y = utils.get_next_pos(maxW, maxH)
 
     if can_harvest():
       harvest()
@@ -44,8 +44,10 @@ def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
     else:
       plant(seed)
 
-    if addFertilizer and (curX + curY) % 2 == 1:
-      use_item(Items.Fertilizer)
+    if addFertilizer:
+      curX, curY = utils.get_pos()
+      if ((curX + curY) % 2) == 1:
+        use_item(Items.Fertilizer)
 
     utils.move_to(x, y)
   quick_print("Planted " + str(totalPlots) + " seeds in " + str(get_time() - startTime) + " seconds")
@@ -91,5 +93,6 @@ if __name__ == "__main__":
   runs = 1
   fieldW = get_world_size()
   fieldH = get_world_size()
-  utils.move_to(0, 0)
-  start(seedToPlant, runs, fieldW, fieldH, expectedItem)
+  for _ in range(runs):
+    utils.move_to(0, 0)
+    start(seedToPlant, fieldW, fieldH, expectedItem)

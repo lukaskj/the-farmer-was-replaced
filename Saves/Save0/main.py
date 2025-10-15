@@ -3,6 +3,7 @@ import utils
 import generic_plant
 import plant_cactus
 import plant_pumpkin
+import plant_sunflower
 
 change_hat(Hats.Wizard_Hat)
 
@@ -90,11 +91,11 @@ def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost
       _handle_costs(seed, item)
 
     if item == Items.Cactus:
-      plant_cactus.start(1, fieldW, fieldH)
+      plant_cactus.start(fieldW, fieldH)
     elif item == Items.Pumpkin:
       plant_pumpkin.start(fieldW, fieldH)
     else:
-      generic_plant.start(seed, 1, fieldW, fieldH, item)
+      generic_plant.start(seed, fieldW, fieldH, item)
     currentTotal = num_items(item)
     quick_print(logPrefix, "Harvested", str(currentTotal - prevTotal), "of", str(item))
 
@@ -125,5 +126,13 @@ def start():
 
 if __name__ == "__main__":
   utils.move_to(0, 0)
-  start()
+  # start()
+
+  startPower = num_items(Items.Power)
+  plant_crop(Items.Power, 10000, 5, 5, True)
+  quick_print("Harvested", str(num_items(Items.Power)))
+  startPower = num_items(Items.Power)
+  plant_sunflower.start(5, 5)
+  quick_print("Harvested", str(num_items(Items.Power)))
+
   # start(seed, fieldW, fieldH)
