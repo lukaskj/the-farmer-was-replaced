@@ -1,11 +1,13 @@
 import utils
 from globals import WORLD_SIZE
 
-def compare(a, b):
+def _sort_compare(a, b):
   return a[2] >= b[2]
 
 def start(maxX, maxY):
+  utils.move_to(0,0)
   sunflowerPetals = []
+  canUseWater = utils.can_use_water(maxX * maxY)
   for _ in range(maxX * maxY):
     nextX, nextY, curX, curY = utils.get_pos_with_next(maxX, maxY)
 
@@ -16,6 +18,8 @@ def start(maxX, maxY):
     if souldTill:
       till()
     plant(Entities.Sunflower)
+    if canUseWater:
+      use_item(Items.Water)
 
     power = measure()
     if power != None:
@@ -24,11 +28,11 @@ def start(maxX, maxY):
     utils.move_to(nextX, nextY)
   
   before = num_items(Items.Power)
-  utils.sort(sunflowerPetals, compare)
+  utils.sort(sunflowerPetals, _sort_compare)
   for i in range(len(sunflowerPetals)):
     x, y, _ = sunflowerPetals[i]
     utils.move_to(x, y)
-    if not can_harvest():
+    if not can_harvest() and get_entity_type() != None:
       utils.wait_for(can_harvest)
     harvest()
   return num_items(Items.Power) - before
@@ -36,6 +40,9 @@ def start(maxX, maxY):
 
 if __name__ == "__main__":
   utils.move_to(0, 0)
-  x = 10
-  y = 5
-  start(x, y)
+  x = 8
+  y = 8
+  totalHarvested = 0
+  for _ in range(3):
+    totalHarvested += start(x, y)
+  quick_print("Total harvested:", totalHarvested)

@@ -34,6 +34,9 @@ def get_next_pos(maxW = None, maxH = None, curX = None, curY = None):
     
   return nextX, nextY
 
+def can_use_water(plots):
+  return num_items(Items.Water) >= plots
+
 # function to sort a list of tuples by x-coordinate only, using an optimized bubble sort
 def sort_coordinates(tuples):
   n = len(tuples)

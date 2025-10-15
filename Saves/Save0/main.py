@@ -18,8 +18,8 @@ size = get_world_size()
 minItems = {
   Items.Power: {
     "amount": 1000,
-    "w": 10,
-    "h": 10,
+    "w": 8,
+    "h": 8,
   },
   Items.Hay: {
     "amount": 450000,
@@ -94,6 +94,8 @@ def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost
       plant_cactus.start(fieldW, fieldH)
     elif item == Items.Pumpkin:
       plant_pumpkin.start(fieldW, fieldH)
+    elif item == Items.Power:
+      plant_sunflower.start(fieldW, fieldH)
     else:
       generic_plant.start(seed, fieldW, fieldH, item)
     currentTotal = num_items(item)
