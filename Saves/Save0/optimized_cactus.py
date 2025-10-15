@@ -1,68 +1,62 @@
 import utils
 from globals import WORLD_SIZE
 
-shouldStart = False
-varTest = {}
+def _sort_columns(maxX, maxY, startX, startY):
+  # sort columns
+  for x in range(maxX):
+    n = maxY
+    swapped = True
+    while swapped:
+      swapped = False
+      utils.moveTo(startX, startY)
+      for y in range(n - 1):
+        if not _is_next_cactus_bigger(North):
+          swap(North)
+          swapped = True
+        move(North)
+      n -= 1
+      if not swapped:
+        break
 
-def _can_walk(direction, maxLen = WORLD_SIZE):
-  x, y = utils.get_pos()
-  if direction == West:
-    return x > 0
-  if direction == South:
-    return y > 0
-  if direction == East:
-    return x < min(maxLen - 1, WORLD_SIZE - 1)
-  if direction == North:
-    return y < min(maxLen - 1, WORLD_SIZE - 1)
+    
 
-def plant_and_sort(maxX, maxY, startX, startY):
+
+def _sort_rows(maxX, maxY, startX, startY):
+  for x in range(maxY):
+    n = maxX
+    swapped = True
+    while swapped:
+      swapped = False
+      utils.moveTo(startX, startY)
+      for y in range(n - 1):
+        if not _is_next_cactus_bigger(East):
+          swap(East)
+          swapped = True
+        move(East)
+      n -= 1
+      if not swapped:
+        break
+
+def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
   seed = Entities.Cactus
   def run():
     for _ in range(maxX * maxY):
-      cur_x, cur_y = utils.get_pos()
-      nextX, nextY = utils.get_next_subgrid_pos(maxX, maxY, startX, startY)
+      nextX, nextY = utils.getNextSubgridPos(maxX, maxY, startX, startY)
       
-      souldTill, _ = utils.get_ground_to_plant(seed)
+      souldTill, _ = utils.getGroundToPlant(seed)
       if souldTill:
         till()
       plant(seed)
 
-      utils.move_to(nextX, nextY)
-    # sort columns
-    for x in range(maxX):
-      n = maxY
-      swapped = True
-      while swapped:
-        swapped = False
-        utils.move_to(startX, startY)
-        for y in range(n - 1):
-          if not _is_next_cactus_bigger(North):
-            swap(North)
-            swapped = True
-          move(North)
-        n -= 1
-        if not swapped:
-          break
+      utils.moveTo(nextX, nextY)
+    
+    _sort_columns(maxX, maxY, startX, startY)
         
   return run
 
-def sort_rows(maxX, maxY, startX, startY):
+def _drone_sort_rows(maxX, maxY, startX, startY):
   def run():
-    # sort rows
-    for x in range(maxY):
-      n = maxX
-      swapped = True
-      while swapped:
-        swapped = False
-        utils.move_to(startX, startY)
-        for y in range(n - 1):
-          if not _is_next_cactus_bigger(East):
-            swap(East)
-            swapped = True
-          move(East)
-        n -= 1
-        if not swapped:
-          break
+    _sort_rows(maxX, maxY, startX, startY)
   return run
 
 
@@ -73,73 +67,56 @@ def _is_next_cactus_bigger(direction):
     return True
   return False 
 
-def start(_maxWidth, _maxHeight, _maxDrones):
-  utils.move_to(0, 0)
-  droneList = []
-  maxDrones = min(_maxDrones, max_drones())  # Fixed maximum number of drones
+def start(_maxWidth, _maxHeight, _maxDrones = None):
+  utils.moveTo(0, 0)
+  if _maxDrones == None:
+    maxDrones = max_drones()
+  else:
+    maxDrones = min(_maxDrones, max_drones())  # Fixed maximum number of drones
   maxWidth = min(_maxWidth, WORLD_SIZE)
   maxHeight = min(_maxHeight, WORLD_SIZE)
 
   for x in range(maxWidth):
-    utils.move_to(x,0)
+    utils.moveTo(x,0)
     while True:
       numDrones = num_drones()
       if numDrones <= maxDrones:
-        droneId = spawn_drone(plant_and_sort(1, maxHeight, x, 0))
+        droneId = utils.spawnDrone(_drone_plant_and_sort_cols(1, maxHeight, x, 0))
         if droneId != None:
-          droneList.append(droneId)
           break
       else:
-        # quick_print("Waiting for idle drones")
-        utils.wait_for(_has_idle_drone(droneList, maxWidth))
-  
-  # quick_print("Waiting for all drones to finish")
-  utils.wait_for(_all_drones_finised(droneList))
+        utils.waitForIdleDrone(maxDrones)
+
+  # _drone_plant_and_sort_cols(1, maxHeight, get_pos_x(), 0)
+  utils.waitForAllDronesToFinish()
 
   for y in range(maxHeight):
-    utils.move_to(0,y)
+    utils.moveTo(0,y)
     while True:
       numDrones = num_drones()
       if numDrones <= maxDrones:
-        droneId = spawn_drone(sort_rows(maxWidth, 1, 0, y))
+        droneId = utils.spawnDrone(_drone_sort_rows(maxWidth, 1, 0, y))
         if droneId != None:
-          droneList.append(droneId)
           break
       else:
-        # quick_print("Waiting for idle drones")
-        utils.wait_for(_has_idle_drone(droneList, maxWidth))
+        utils.waitForIdleDrone(maxDrones)
   
-  utils.wait_for(_all_drones_finised(droneList))
+  utils.waitForAllDronesToFinish()
 
   beforeCount = num_items(Items.Cactus)
   if can_harvest():
     harvest()
   return num_items(Items.Cactus) - beforeCount
 
-def _has_idle_drone(droneList, maxSize):
-  def fnc():
-    tmpDroneList = droneList[:]    
-    hasIdleDrone = False
-    for drone in tmpDroneList:
-      if has_finished(drone):
-        hasIdleDrone = True
-        droneList.remove(drone)
-    return hasIdleDrone
-  return fnc
-
-def _all_drones_finised(droneList):
-  def fnc():
-    totalFinished = 0
-    for drone in droneList:
-      if has_finished(drone):
-        totalFinished += 1
-    return len(droneList) == totalFinished
-
-  return fnc
-
-
 if __name__ == "__main__":
+  runs = 20
+  width = WORLD_SIZE
+  height = WORLD_SIZE
+  maxDrones = max_drones()
+
+  harvested = 0
   startTime = get_time()
-  harvested = start(10, 10, max_drones())
+  for _ in range(runs):
+    harvested += start(width, height, maxDrones)
   end = get_time()
-  quick_print("Harvested", harvested, "in", end - startTime, "seconds")
+  quick_print("Harvested", harvested, "(" + str(width*height) + " plots)", "in", end - startTime, "seconds using", maxDrones, "drones")

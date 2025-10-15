@@ -17,7 +17,7 @@ def start():
   lenY = len(farm)
   lenX = len(farm[0])
   
-  x, y = utils.get_pos()
+  x, y = utils.getPos()
   while True:
     col = x % lenX
     row = y % lenY
@@ -28,15 +28,15 @@ def start():
     seed = farm[row][col]
     if can_harvest():
       harvest()
-    shouldTill, ground = utils.get_ground_to_plant(seed)
+    shouldTill, ground = utils.getGroundToPlant(seed)
 
 
     if shouldTill:
       till()
     
     plant(seed)
-    x, y = utils.get_next_pos()
-    utils.move_to(x, y)
+    x, y = utils.getNextPos()
+    utils.moveTo(x, y)
 
 if __name__ == "__main__":
   start()

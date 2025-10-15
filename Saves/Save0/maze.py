@@ -1,4 +1,4 @@
-from utils import move_to
+from utils import moveTo
 
 def generate_maze():
     plant(Entities.Bush)
@@ -37,7 +37,7 @@ def wait_then_maze_solve():
 def main():
     clear()
     for i in range(get_world_size()):
-        move_to(i,i)
+        moveTo(i,i)
         if num_drones() < max_drones():
             spawn_drone(wait_then_maze_solve)
             

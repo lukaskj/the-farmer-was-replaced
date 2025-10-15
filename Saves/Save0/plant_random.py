@@ -5,7 +5,7 @@ def start():
   lenY = h
   lenX = w
 
-  col, row = utils.get_pos()
+  col, row = utils.getPos()
   x = col % lenX
   y = row % lenY
   seed = Entities.Grass
@@ -25,15 +25,15 @@ def start():
     if can_harvest():
       harvest()
 
-    souldTill, _ = utils.get_ground_to_plant(seed)
+    souldTill, _ = utils.getGroundToPlant(seed)
     if souldTill:
       till()
     plant(seed)
 
-    x, y = utils.get_next_pos()
-    utils.move_to(x, y)
+    x, y = utils.getNextPos()
+    utils.moveTo(x, y)
 
 
 if __name__ == "__main__":
-  utils.move_to(0, 0)
+  utils.moveTo(0, 0)
   start()

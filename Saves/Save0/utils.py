@@ -1,21 +1,21 @@
 from globals import w, h, SEEDS_TO_GROUND, ITEM_TO_SEED, SEED_TO_ITEM
 
-def is_even(n):
+def isEven(n):
   return n % 2 == 0
 
-def get_pos():
+def getPos():
   return get_pos_x(), get_pos_y()
 
-def get_pos_with_next(maxX = None, maxY = None):
-  curX, curY = get_pos()
-  nextX, nextY = get_next_pos(maxX, maxY, curX, curY)
+def getPosWithNext(maxX = None, maxY = None):
+  curX, curY = getPos()
+  nextX, nextY = getNextPos(maxX, maxY, curX, curY)
   return nextX, nextY, curX, curY
 
-def get_next_pos(maxW = None, maxH = None, curX = None, curY = None):
+def getNextPos(maxW = None, maxH = None, curX = None, curY = None):
   global w
   global h
   if curX == None or curY == None:
-    x, y = get_pos()
+    x, y = getPos()
   else:
      x, y = curX, curY
   if maxW == None or maxH == None:
@@ -34,11 +34,11 @@ def get_next_pos(maxW = None, maxH = None, curX = None, curY = None):
     
   return nextX, nextY
 
-def can_use_water(plots):
+def canUseWater(plots):
   return num_items(Items.Water) >= plots
 
 # function to sort a list of tuples by x-coordinate only, using an optimized bubble sort
-def sort_coordinates(tuples):
+def sortCoordinates(tuples):
   n = len(tuples)
   swapped = True
   while swapped:
@@ -50,39 +50,39 @@ def sort_coordinates(tuples):
     n -= 1  # Last element is already in place after each pass
   return tuples
 
-def move_to(x, y):
-    width = w
-    dx = x - get_pos_x()
-    dy = y - get_pos_y()
-    
-    if dx > 0:
-        if dx > width/2:
-            move(West)    
-        else:
-            move(East)
-    elif dx < 0:
-        if abs(dx) > width/2:
-            move(East)        
-        else:
-            move(West)
-                    
-    if dy > 0:
-        if dy > width/2:
-            move(South)        
-        else:
-            move(North)
-    elif dy < 0:
-        if abs(dy) > width/2:
-            move(North)
-        else:
-            move(South)
-    
-    if not (get_pos_x() == x and get_pos_y() == y):
-        move_to(x, y)
+def moveTo(x, y):
+  width = w
+  dx = x - get_pos_x()
+  dy = y - get_pos_y()
+  
+  if dx > 0:
+    if dx > width/2:
+      move(West)
     else:
-        return
+      move(East)
+  elif dx < 0:
+    if abs(dx) > width/2:
+      move(East)
+    else:
+      move(West)
+          
+  if dy > 0:
+    if dy > width/2:
+      move(South)
+    else:
+      move(North)
+  elif dy < 0:
+    if abs(dy) > width/2:
+      move(North)
+    else:
+      move(South)
+  
+  if not (get_pos_x() == x and get_pos_y() == y):
+    moveTo(x, y)
+  else:
+    return
 
-def get_ground_to_plant(seed):
+def getGroundToPlant(seed):
   curGround = get_ground_type()
   ground = Grounds.Grassland
   if seed in SEEDS_TO_GROUND:
@@ -90,19 +90,19 @@ def get_ground_to_plant(seed):
   
   return curGround != ground, ground
 
-def plant(seed):
-  souldTill, _ = get_ground_to_plant(seed)
+def plantSeed(seed):
+  souldTill, _ = getGroundToPlant(seed)
   if souldTill:
     till()
-  plant(seed)
+  return plant(seed)
 
-def item_to_seed(item):
+def itemToSeed(item):
   if not item in ITEM_TO_SEED:
     quick_print("No item found in ITEM_TO_SEED map: " + str(item))
     return None
   return ITEM_TO_SEED[item]
 
-def seed_to_item(seed):
+def seedToItem(seed):
   if not seed in SEED_TO_ITEM:
     quick_print("No item found in SEED_TO_ITEM map: " + str(seed))
     return None
@@ -115,10 +115,9 @@ def sleep(secondsToWait):
     elapsed = get_time() - start
   return
 
-def wait_for(fnc, max = 1000000000):
-  i = 0
-  while not fnc() and i < max:
-    i += 1
+def waitFor(fnc, max = 1000000000):
+  while not fnc():
+    sleep(0.1)
   return True
 
 
@@ -167,8 +166,8 @@ def sort(list, compare_fn=None):
   __quicksort_helper(list, 0, len(list) - 1, compare_fn)
   return list
 
-def get_next_subgrid_pos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
-  cur_x, cur_y = get_pos()
+def getNextSubgridPos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
+  cur_x, cur_y = getPos()
   # Convert current position to subgrid coordinates
   local_x = cur_x - offset_x
   local_y = cur_y - offset_y
@@ -193,3 +192,94 @@ def get_next_subgrid_pos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
   
   return next_x, next_y
 
+# AI generated
+def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):
+  # Calculate optimal subgrid divisions for a given grid size and maximum number of subgrids.
+  # 
+  # Args:
+  #   gridWidth: Width of the parent grid
+  #   gridHeight: Height of the parent grid
+  #   maxSubgrids: Maximum number of subgrids to create
+  # 
+  # Returns:
+  #   List of subgrids, each as [offset_x, offset_y, width, height]
+  
+  # If maxSubgrids is 1 or less, return the entire grid
+  if maxSubgrids <= 1:
+    return [[0, 0, gridWidth, gridHeight]]
+  
+  # Find the best factorization for dividing the grid
+  # Try to find factors closest to square root for most balanced division
+  best_rows = 1
+  best_cols = maxSubgrids
+  
+  # Find divisors of maxSubgrids that are closest to each other
+  i = 1
+  while i * i <= maxSubgrids:
+    if maxSubgrids % i == 0:
+      rows = i
+      cols = maxSubgrids // i
+      # Prefer more balanced divisions
+      if abs(rows - cols) < abs(best_rows - best_cols):
+        best_rows = rows
+        best_cols = cols
+    i = i + 1
+  
+  # Calculate subgrid dimensions
+  subgrid_width = gridWidth // best_cols
+  subgrid_height = gridHeight // best_rows
+  
+  # Create subgrids
+  subgrids = []
+  for row in range(best_rows):
+    for col in range(best_cols):
+      offset_x = col * subgrid_width
+      offset_y = row * subgrid_height
+      
+      # Handle remainder pixels for last column/row
+      width = subgrid_width
+      height = subgrid_height
+      
+      if col == best_cols - 1:
+        width = gridWidth - offset_x
+      if row == best_rows - 1:
+        height = gridHeight - offset_y
+      
+      subgrids.append([offset_x, offset_y, width, height])
+  
+  return subgrids
+
+
+_drones = []
+def spawnDrone(fnc):
+  droneId = spawn_drone(fnc)
+  if droneId != None:
+    _drones.append(droneId)
+  return droneId
+
+def waitForIdleDrone(maxDrones = None):
+  global _drones
+  if maxDrones == None:
+    maxDrones = max_drones()
+  def fnc():
+    if maxDrones > len(_drones):
+      return True
+    for drone in _drones:
+      if has_finished(drone):
+        return True
+    return False
+
+  waitFor(fnc)
+
+def waitForAllDronesToFinish():
+  global _drones
+  def fnc():
+    totalFinished = 0
+    for drone in _drones:
+      if has_finished(drone):
+        totalFinished += 1
+    return len(_drones) == totalFinished
+
+  waitFor(fnc)
+  _drones = []
+  

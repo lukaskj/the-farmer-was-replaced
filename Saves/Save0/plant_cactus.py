@@ -1,7 +1,7 @@
 import utils
 
 def start(maxX, maxY):
-  utils.move_to(0, 0)
+  utils.moveTo(0, 0)
   _plant(maxX, maxY)
   _sort_cols(maxX, maxY)
   _sort_rows(maxX, maxY)
@@ -11,14 +11,14 @@ def start(maxX, maxY):
 def _plant(maxX, maxY):
   seed = Entities.Cactus
   for _ in range(maxX * maxY):
-    x, y = utils.get_next_pos(maxX, maxY)
+    x, y = utils.getNextPos(maxX, maxY)
     
-    souldTill, _ = utils.get_ground_to_plant(seed)
+    souldTill, _ = utils.getGroundToPlant(seed)
     if souldTill:
       till()
     plant(seed)
 
-    utils.move_to(x, y)
+    utils.moveTo(x, y)
 
 def _sort_cols(maxX, maxY):
   quick_print("Sorting columns")
@@ -27,7 +27,7 @@ def _sort_cols(maxX, maxY):
     swapped = True
     while swapped:
       swapped = False
-      utils.move_to(0, y)
+      utils.moveTo(0, y)
       for x in range(n - 1):
         if can_harvest():
           if not _is_next_cactus_bigger(East):
@@ -45,7 +45,7 @@ def _sort_rows(maxX, maxY):
     swapped = True
     while swapped:
       swapped = False
-      utils.move_to(x, 0)
+      utils.moveTo(x, 0)
       for y in range(n - 1):
         if not _is_next_cactus_bigger(North):
           swap(North)

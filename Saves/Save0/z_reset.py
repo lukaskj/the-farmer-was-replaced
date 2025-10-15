@@ -1,3 +1,3 @@
 import utils
 clear()
-utils.move_to(0,0)
+utils.moveTo(0,0)

@@ -1,7 +1,7 @@
 import utils
 
 def start(seed, maxW, maxH, item = None):
-  itemToHarvest = utils.seed_to_item(seed)
+  itemToHarvest = utils.seedToItem(seed)
   if not seed:
     quick_print("No seed selected!")
     return
@@ -20,18 +20,18 @@ def start(seed, maxW, maxH, item = None):
 
 def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
   startTime = get_time()
-  utils.move_to(0, 0)
+  utils.moveTo(0, 0)
   totalPlots = maxW * maxH
   for _ in range(totalPlots):
-    x, y = utils.get_next_pos(maxW, maxH)
+    x, y = utils.getNextPos(maxW, maxH)
 
     if can_harvest():
       harvest()
-    souldTill, _ = utils.get_ground_to_plant(seed)
+    souldTill, _ = utils.getGroundToPlant(seed)
     if souldTill:
       till()
     if item == Items.Wood:
-      curX, curY = utils.get_pos()
+      curX, curY = utils.getPos()
       if (curX + curY) % 2 == 0:
         plant(Entities.Tree)
       else:
@@ -40,26 +40,26 @@ def _plant(seed, maxW, maxH, item = None, addFertilizer = False):
       plant(seed)
 
     if addFertilizer:
-      curX, curY = utils.get_pos()
+      curX, curY = utils.getPos()
       if ((curX + curY) % 2) == 1:
         use_item(Items.Fertilizer)
 
-    utils.move_to(x, y)
+    utils.moveTo(x, y)
   quick_print("Planted " + str(totalPlots) + " seeds in " + str(get_time() - startTime) + " seconds")
 
 def _harvest(maxW, maxH, seed):
   totalPlots = maxW * maxH
   harvestedPlots = 0
-  utils.move_to(0, 0)
+  utils.moveTo(0, 0)
   notHarvested = []
   for _ in range(totalPlots):
     if can_harvest():
       harvest()
       harvestedPlots += 1
     else:
-      notHarvested.append(utils.get_pos())
-    x, y = utils.get_next_pos(maxW, maxH)
-    utils.move_to(x, y)
+      notHarvested.append(utils.getPos())
+    x, y = utils.getNextPos(maxW, maxH)
+    utils.moveTo(x, y)
 
   # Loop to harvest not harvested plots
   while harvestedPlots < totalPlots:
@@ -71,7 +71,7 @@ def _harvest(maxW, maxH, seed):
       do_a_flip()
     # quick_print("Loop - Harvested: " + str(harvested) + ", Total: " + str(totalPlots) + " - " + str(notHarvested))
     for (col, row) in tmpNotHarvested:
-      utils.move_to(col, row)
+      utils.moveTo(col, row)
       plotUnderDrone = get_entity_type()
       if can_harvest() or plotUnderDrone == None or plotUnderDrone == Entities.Dead_Pumpkin:
         harvestedPlots += 1
@@ -87,5 +87,5 @@ if __name__ == "__main__":
   fieldW = get_world_size()
   fieldH = get_world_size()
   for _ in range(runs):
-    utils.move_to(0, 0)
+    utils.moveTo(0, 0)
     start(seedToPlant, fieldW, fieldH, expectedItem)

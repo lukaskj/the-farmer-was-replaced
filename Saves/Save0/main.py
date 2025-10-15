@@ -2,6 +2,7 @@ from globals import w, h
 import utils
 import generic_plant
 import plant_cactus
+import optimized_cactus
 import plant_pumpkin
 import plant_sunflower
 
@@ -22,27 +23,27 @@ minItems = {
     "h": 8,
   },
   Items.Hay: {
-    "amount": 450000,
+    "amount": 200000,
     "w": size,
     "h": size,
   },
   Items.Wood: {
-    "amount": 500000,
+    "amount": 800000,
     "w": size,
     "h": size,
   },
   Items.Carrot: {
-    "amount": 220000,
+    "amount": 300000,
     "w": size,
     "h": size,
   },
   Items.Pumpkin: {
-    "amount": 300000,
+    "amount": 100000,
     "w": 10,
     "h": 10,
   },
   Items.Cactus: {
-    "amount": 4000000,
+    "amount": 15700000,
     "w": size,
     "h": size,
   },
@@ -73,7 +74,7 @@ def _get_config(item):
   return expectedAmount, currentAmount, fieldWidth, fieldHeight
 
 def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost = False):  
-  seed = utils.item_to_seed(item)
+  seed = utils.itemToSeed(item)
   if seed == None:
     return
   currentTotal = num_items(item)
@@ -91,7 +92,7 @@ def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost
       _handle_costs(seed, item)
 
     if item == Items.Cactus:
-      plant_cactus.start(fieldW, fieldH)
+      optimized_cactus.start(fieldW, fieldH)
     elif item == Items.Pumpkin:
       plant_pumpkin.start(fieldW, fieldH)
     elif item == Items.Power:
@@ -127,14 +128,14 @@ def start():
 
 
 if __name__ == "__main__":
-  utils.move_to(0, 0)
-  # start()
+  utils.moveTo(0, 0)
+  start()
 
-  startPower = num_items(Items.Power)
-  plant_crop(Items.Power, 10000, 5, 5, True)
-  quick_print("Harvested", str(num_items(Items.Power)))
-  startPower = num_items(Items.Power)
-  plant_sunflower.start(5, 5)
-  quick_print("Harvested", str(num_items(Items.Power)))
+  # startPower = num_items(Items.Power)
+  # plant_crop(Items.Power, 10000, 5, 5, True)
+  # quick_print("Harvested", str(num_items(Items.Power)))
+  # startPower = num_items(Items.Power)
+  # plant_sunflower.start(5, 5)
+  # quick_print("Harvested", str(num_items(Items.Power)))
 
   # start(seed, fieldW, fieldH)
