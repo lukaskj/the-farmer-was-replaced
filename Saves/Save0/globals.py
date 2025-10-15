@@ -1,6 +1,9 @@
 WORLD_SIZE = get_world_size()
 w, h = WORLD_SIZE, WORLD_SIZE
 
+ORIENTATION_UPDOWN = 1
+ORIENTATION_LEFTRIGHT = 2
+
 SEEDS_TO_GROUND = {
   Entities.Bush: Grounds.Grassland,
   Entities.Tree: Grounds.Grassland,
