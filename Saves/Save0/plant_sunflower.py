@@ -40,9 +40,12 @@ def start(maxX, maxY):
 
 if __name__ == "__main__":
   utils.moveTo(0, 0)
-  x = 8
-  y = 8
+  x = 12
+  y = 12
   totalHarvested = 0
-  for _ in range(3):
+  power = 0
+  while power < 20000:
     totalHarvested += start(x, y)
+    power = num_items(Items.Power)
+    quick_print("Power:", power)
   quick_print("Total harvested:", totalHarvested)

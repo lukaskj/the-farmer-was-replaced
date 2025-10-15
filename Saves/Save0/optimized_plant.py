@@ -68,9 +68,9 @@ def _loop_grid(seed, startX, startY, width, height):
 
 if __name__ == "__main__":
   clear()
-  seed = Entities.Bush
+  seed = Entities.Sunflower
   utils.moveTo(0, 0)
-  runs = 10
+  runs = 50
   
   start(seed, WORLD_SIZE, WORLD_SIZE, runs, None)
   # utils.waitForAllDronesToFinish()
