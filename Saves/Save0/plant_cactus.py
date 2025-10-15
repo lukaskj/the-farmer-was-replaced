@@ -2,7 +2,6 @@ import utils
 
 def start(maxX, maxY):
   utils.move_to(0, 0)
-  startTime = get_time()
   _plant(maxX, maxY)
   _sort_cols(maxX, maxY)
   _sort_rows(maxX, maxY)
@@ -31,7 +30,7 @@ def _sort_cols(maxX, maxY):
       utils.move_to(0, y)
       for x in range(n - 1):
         if can_harvest():
-          if not is_next_cactus_bigger(East):
+          if not _is_next_cactus_bigger(East):
             swap(East)
             swapped = True
         move(East)
@@ -48,10 +47,9 @@ def _sort_rows(maxX, maxY):
       swapped = False
       utils.move_to(x, 0)
       for y in range(n - 1):
-        if can_harvest():
-          if not is_next_cactus_bigger(North):
-            swap(North)
-            swapped = True
+        if not _is_next_cactus_bigger(North):
+          swap(North)
+          swapped = True
         move(North)
       n -= 1  # Last element is in place after each pass
       if not swapped:  # Early termination if no swaps needed
@@ -59,7 +57,7 @@ def _sort_rows(maxX, maxY):
       
     # utils.move_to(x, y)
 
-def is_next_cactus_bigger(direction):
+def _is_next_cactus_bigger(direction):
   selfSize = measure()
   nextSize = measure(direction)
   if nextSize != None and selfSize <= nextSize:
@@ -79,8 +77,11 @@ if __name__ == "__main__":
   runs = 1
   maxX = get_world_size()
   maxY = get_world_size()
-  maxX = 3
-  maxY = 4
-  seed = Entities.Cactus
-  for _ in range(runs):
-    start(maxX, maxY)
+  maxX = 10
+  maxY = 10
+
+  startTime = get_time()
+  harvested = start(maxX, maxY)
+  end = get_time()
+
+  quick_print("(old) Harvested", harvested, "in", end - startTime, "seconds")

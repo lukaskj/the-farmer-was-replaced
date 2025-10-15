@@ -90,6 +90,12 @@ def get_ground_to_plant(seed):
   
   return curGround != ground, ground
 
+def plant(seed):
+  souldTill, _ = get_ground_to_plant(seed)
+  if souldTill:
+    till()
+  plant(seed)
+
 def item_to_seed(item):
   if not item in ITEM_TO_SEED:
     quick_print("No item found in ITEM_TO_SEED map: " + str(item))
@@ -160,3 +166,30 @@ def sort(list, compare_fn=None):
     
   __quicksort_helper(list, 0, len(list) - 1, compare_fn)
   return list
+
+def get_next_subgrid_pos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
+  cur_x, cur_y = get_pos()
+  # Convert current position to subgrid coordinates
+  local_x = cur_x - offset_x
+  local_y = cur_y - offset_y
+  
+  # Calculate next position within subgrid
+  next_local_x = local_x + 1
+  next_local_y = local_y
+  
+  # If we've reached the end of the row, wrap to next row
+  if next_local_x >= subgrid_width:
+    next_local_x = 0
+    next_local_y = local_y + 1
+  
+  # If we've gone past the last row, stay at current position
+  if next_local_y >= subgrid_height:
+    next_local_x = local_x
+    next_local_y = local_y
+  
+  # Convert back to parent grid coordinates
+  next_x = next_local_x + offset_x
+  next_y = next_local_y + offset_y
+  
+  return next_x, next_y
+

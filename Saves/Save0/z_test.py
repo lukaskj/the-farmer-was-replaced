@@ -8,7 +8,12 @@ import utils
 # nextPos = utils.get_next_pos(1, 3)
 # quick_print(nextPos)
 
-utils.move_to(0, 0)
-for i in range(get_world_size() * get_world_size()):
-  x, y = utils.get_next_pos()
-  utils.move_to(x, y)
+#utils.move_to(0, 0)
+subgridX = 3
+subgridY = 2
+maxX = 3
+maxY = 3
+
+x, y = utils.get_next_subgrid_pos(maxX, maxY, subgridX, subgridY)
+quick_print(x, y)
+utils.move_to(x, y)
