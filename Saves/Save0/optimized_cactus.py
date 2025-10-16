@@ -41,6 +41,8 @@ def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
     for _ in range(maxX * maxY):
       nextX, nextY = utils.getNextSubgridPos(maxX, maxY, startX, startY)
       
+      if can_harvest():
+        harvest()
       utils.plantSeed(seed, addFertilizer)
 
       utils.moveTo(nextX, nextY)

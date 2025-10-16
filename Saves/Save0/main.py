@@ -1,8 +1,8 @@
 from globals import w, h
 import utils
 import generic_plant
-import plant_cactus
 import optimized_cactus
+import optimized_plant
 import plant_pumpkin
 import plant_sunflower
 
@@ -23,27 +23,27 @@ minItems = {
     "h": 8,
   },
   Items.Hay: {
-    "amount": 200000,
+    "amount": 5000000,
     "w": size,
     "h": size,
   },
   Items.Wood: {
-    "amount": 800000,
+    "amount": 20000000,
     "w": size,
     "h": size,
   },
   Items.Carrot: {
-    "amount": 300000,
+    "amount": 1200000,
     "w": size,
     "h": size,
   },
   Items.Pumpkin: {
-    "amount": 100000,
+    "amount": 800000,
     "w": 10,
     "h": 10,
   },
   Items.Cactus: {
-    "amount": 15700000,
+    "amount": 2000000,
     "w": size,
     "h": size,
   },
@@ -96,9 +96,12 @@ def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost
     elif item == Items.Pumpkin:
       plant_pumpkin.start(fieldW, fieldH)
     elif item == Items.Power:
-      plant_sunflower.start(fieldW, fieldH)
+      # plant_sunflower.start(fieldW, fieldH)
+      optimized_plant.start(Entities.Sunflower, fieldW, fieldH, 5)
     else:
-      generic_plant.start(seed, fieldW, fieldH, item)
+      optimized_plant.start(seed, fieldW, fieldH, 5)
+    utils.moveTo(0, 0)
+    utils.waitForAllDronesToFinish()
     currentTotal = num_items(item)
     quick_print(logPrefix, "Harvested", str(currentTotal - prevTotal), "of", str(item))
 

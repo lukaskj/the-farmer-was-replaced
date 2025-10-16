@@ -122,7 +122,7 @@ def sleep(secondsToWait):
 
 def waitFor(fnc, max = 1000000000):
   while not fnc():
-    sleep(0.1)
+    sleep(0.2)
   return True
 
 

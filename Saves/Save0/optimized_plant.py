@@ -4,8 +4,10 @@ import utils
 def start(seed, w, h, runs = 1, maxDrones = None):
   if maxDrones == None:
     maxDrones = max_drones() - 1
+  maxDrones = min(maxDrones, min(w, h))
   grids = utils.calculateSubgrids(w, h, maxDrones)
   
+  quick_print(maxDrones, grids)
   for coords in grids:
     x, y, width, height = coords
     utils.moveTo(x, y)
@@ -34,7 +36,7 @@ def _loop_grid(seed, startX, startY, width, height):
         utils.plantSeed(seed)
     else:      
       utils.plantSeed(seed)
-    if seed == Entities.Sunflower and utils.canUseWater(width * height):
+    if (seed == Entities.Sunflower or seed == Entities.Bush or seed == Entities.Tree) and utils.canUseWater(width * height):
       use_item(Items.Water)
       
 
@@ -57,7 +59,8 @@ def _loop_grid(seed, startX, startY, width, height):
   while harvestedTotal < toHarvestTotal and len(notHarvested) > 0:
     for pos in notHarvested:
       utils.moveTo(pos[0], pos[1])
-      if can_harvest() or get_entity_type() == None:
+      plotUnderDrone = get_entity_type()
+      if can_harvest() or plotUnderDrone == None or plotUnderDrone == Entities.Dead_Pumpkin:
         harvest()
         harvestedTotal += 1
         notHarvested.remove(pos)
