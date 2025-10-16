@@ -253,38 +253,3 @@ def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):
       subgrids.append([offset_x, offset_y, width, height])
   
   return subgrids
-
-
-_drones = []
-def spawnDrone(fnc):
-  droneId = spawn_drone(fnc)
-  if droneId != None:
-    _drones.append(droneId)
-  return droneId
-
-def waitForIdleDrone(maxDrones = None):
-  global _drones
-  if maxDrones == None:
-    maxDrones = max_drones()
-  def fnc():
-    if maxDrones > len(_drones):
-      return True
-    for drone in _drones:
-      if has_finished(drone):
-        return True
-    return False
-
-  waitFor(fnc)
-
-def waitForAllDronesToFinish():
-  global _drones
-  def fnc():
-    totalFinished = 0
-    for drone in _drones:
-      if has_finished(drone):
-        totalFinished += 1
-    return len(_drones) == totalFinished
-
-  waitFor(fnc)
-  _drones = []
-  

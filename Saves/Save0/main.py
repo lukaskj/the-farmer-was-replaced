@@ -1,6 +1,6 @@
 from globals import w, h
 import utils
-import generic_plant
+import drones
 import optimized_cactus
 import optimized_plant
 import plant_pumpkin
@@ -28,7 +28,7 @@ minItems = {
     "h": size,
   },
   Items.Wood: {
-    "amount": 20000000,
+    "amount": 1000000,
     "w": size,
     "h": size,
   },
@@ -101,7 +101,7 @@ def plant_crop(item, expectedAmount, fieldW, fieldH, bypassCosts = False, isCost
     else:
       optimized_plant.start(seed, fieldW, fieldH, 5)
     utils.moveTo(0, 0)
-    utils.waitForAllDronesToFinish()
+    drones.waitForAllDronesToFinish()
     currentTotal = num_items(item)
     quick_print(logPrefix, "Harvested", str(currentTotal - prevTotal), "of", str(item))
 

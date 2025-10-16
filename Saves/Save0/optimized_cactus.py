@@ -1,4 +1,5 @@
 import utils
+import drones
 from globals import WORLD_SIZE, ORIENTATION_UPDOWN, ORIENTATION_LEFTRIGHT
 
 def _sort_columns(maxX, maxY, startX, startY):
@@ -130,27 +131,27 @@ def start(_maxWidth, _maxHeight, _maxDrones = None):
     while True:
       numDrones = num_drones()
       if numDrones <= maxDrones:
-        droneId = utils.spawnDrone(_drone_plant_and_sort_cols(1, maxHeight, x, 0))
+        droneId = drones.spawnDrone(_drone_plant_and_sort_cols(1, maxHeight, x, 0))
         if droneId != None:
           break
       else:
-        utils.waitForIdleDrone(maxDrones)
+        drones.waitForIdleDrone(maxDrones)
 
   # _drone_plant_and_sort_cols(1, maxHeight, get_pos_x(), 0)
-  utils.waitForAllDronesToFinish()
+  drones.waitForAllDronesToFinish()
 
   for y in range(maxHeight):
     utils.moveTo(0,y)
     while True:
       numDrones = num_drones()
       if numDrones <= maxDrones:
-        droneId = utils.spawnDrone(_drone_sort_rows(maxWidth, 1, 0, y))
+        droneId = drones.spawnDrone(_drone_sort_rows(maxWidth, 1, 0, y))
         if droneId != None:
           break
       else:
-        utils.waitForIdleDrone(maxDrones)
+        drones.waitForIdleDrone(maxDrones)
   
-  utils.waitForAllDronesToFinish()
+  drones.waitForAllDronesToFinish()
 
   beforeCount = num_items(Items.Cactus)
   if can_harvest():

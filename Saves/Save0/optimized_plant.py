@@ -1,18 +1,18 @@
 from globals import WORLD_SIZE
 import utils
+import drones
 
 def start(seed, w, h, runs = 1, maxDrones = None):
   if maxDrones == None:
     maxDrones = max_drones() - 1
   maxDrones = min(maxDrones, min(w, h))
   grids = utils.calculateSubgrids(w, h, maxDrones)
-  
-  quick_print(maxDrones, grids)
+
   for coords in grids:
     x, y, width, height = coords
     utils.moveTo(x, y)
     
-    utils.spawnDrone(_spawn_drone(seed, x, y, width, height, runs))
+    drones.spawnDrone(_spawn_drone(seed, x, y, width, height, runs))
 
 def _spawn_drone(seed, startX, startY, width, height, runs = 1):
   def run():
@@ -71,9 +71,16 @@ def _loop_grid(seed, startX, startY, width, height):
 
 if __name__ == "__main__":
   clear()
-  seed = Entities.Sunflower
+  seed = Entities.Carrot
   utils.moveTo(0, 0)
-  runs = 50
-  
+  runs = 1
+
+  item = utils.seedToItem(seed)
+  startAmount = num_items(item)
+
   start(seed, WORLD_SIZE, WORLD_SIZE, runs, None)
-  # utils.waitForAllDronesToFinish()
+
+  drones.waitForAllDronesToFinish()
+  drones.waitForAllDronesToFinish()
+  endAmount = num_items(item)
+  quick_print("Harvested", endAmount - startAmount, "of", item)
