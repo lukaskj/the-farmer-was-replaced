@@ -82,7 +82,7 @@ def _harvest(maxW, maxH, seed):
 
 if __name__ == "__main__":
   seedToPlant = Entities.Bush
-  expectedItem = Items.Wood
+  expectedItem = utils.seedToItem(seedToPlant)
   runs = 1
   fieldW = get_world_size()
   fieldH = get_world_size()

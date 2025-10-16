@@ -90,11 +90,16 @@ def getGroundToPlant(seed):
   
   return curGround != ground, ground
 
-def plantSeed(seed):
+def plantSeed(seed, addFertilizer = False):
   souldTill, _ = getGroundToPlant(seed)
   if souldTill:
     till()
-  return plant(seed)
+  planted = plant(seed)
+
+  if addFertilizer:
+    use_item(Items.Fertilizer)
+
+  return planted
 
 def itemToSeed(item):
   if not item in ITEM_TO_SEED:

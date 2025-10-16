@@ -37,13 +37,11 @@ def _sort_rows(maxX, maxY, startX, startY):
 def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
   seed = Entities.Cactus
   def run():
+    addFertilizer = num_items(Items.Weird_Substance) < 10000
     for _ in range(maxX * maxY):
       nextX, nextY = utils.getNextSubgridPos(maxX, maxY, startX, startY)
       
-      souldTill, _ = utils.getGroundToPlant(seed)
-      if souldTill:
-        till()
-      plant(seed)
+      utils.plantSeed(seed, addFertilizer)
 
       utils.moveTo(nextX, nextY)
     
@@ -158,13 +156,15 @@ def start(_maxWidth, _maxHeight, _maxDrones = None):
   return num_items(Items.Cactus) - beforeCount
 
 if __name__ == "__main__":
-  runs = 20
+  runs = 2
   width = WORLD_SIZE
   height = WORLD_SIZE
   maxDrones = max_drones()
+  minCactus = 1000000
 
   harvested = 0
   startTime = get_time()
+  # while num_items(Items.Cactus) < minCactus:
   for _ in range(runs):
     harvested += start(width, height, maxDrones)
   end = get_time()

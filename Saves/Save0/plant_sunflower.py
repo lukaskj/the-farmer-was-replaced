@@ -40,8 +40,8 @@ def start(maxX, maxY):
 
 if __name__ == "__main__":
   utils.moveTo(0, 0)
-  x = 12
-  y = 12
+  x = 8
+  y = 8
   totalHarvested = 0
   power = 0
   while power < 20000:
