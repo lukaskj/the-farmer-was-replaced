@@ -1,4 +1,4 @@
 import utils
-#utils.move_to(0,0)
-harvest()
-#quick_print(measure())
+#utils.moveTo(0,0)
+#harvest()
+quick_print(get_ground_type())

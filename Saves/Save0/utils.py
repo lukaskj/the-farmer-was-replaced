@@ -50,7 +50,45 @@ def sortCoordinates(tuples):
     n -= 1  # Last element is already in place after each pass
   return tuples
 
-def moveTo(x, y):
+def moveTo(toX, toY):
+  curX, curY = getPos()  
+  halfX = w / 2
+  halfY = h / 2
+
+  if toX >= w:
+    toX = toX % w
+  if toY >= h:
+    toY = toY % w
+
+  if curX != toX:
+    dx = toX - curX
+    while toX != get_pos_x():
+      if dx > 0:
+        if dx > halfX:
+          move(West)
+        else:
+          move(East)
+      elif dx < 0:
+        if abs(dx) > halfX:
+          move(East)
+        else:
+          move(West)
+
+  if curY != toY:
+    dy = toY - curY
+    while toY != get_pos_y():
+      if dy > 0:
+        if dy > halfY:
+          move(South)
+        else:
+          move(North)
+      elif dy < 0:
+        if abs(dy) > halfY:
+          move(North)
+        else:
+          move(South)
+
+def moveToOld(x, y):
   width = w
   dx = x - get_pos_x()
   dy = y - get_pos_y()
@@ -120,9 +158,9 @@ def sleep(secondsToWait):
     elapsed = get_time() - start
   return
 
-def waitFor(fnc, max = 1000000000):
+def waitFor(fnc, _sleep = 0.2):
   while not fnc():
-    sleep(0.2)
+    sleep(_sleep)
   return True
 
 
@@ -171,7 +209,7 @@ def sort(list, compare_fn=None):
   __quicksort_helper(list, 0, len(list) - 1, compare_fn)
   return list
 
-def getNextSubgridPos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
+def getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
   cur_x, cur_y = getPos()
   # Convert current position to subgrid coordinates
   local_x = cur_x - offset_x
@@ -196,6 +234,10 @@ def getNextSubgridPos(subgrid_width, subgrid_height, offset_x=0, offset_y=0):
   next_y = next_local_y + offset_y
   
   return next_x, next_y
+
+def moveToNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
+  nextX, nextY = getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height)
+  moveTo(nextX, nextY)
 
 # AI generated
 def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):
@@ -253,3 +295,6 @@ def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):
       subgrids.append([offset_x, offset_y, width, height])
   
   return subgrids
+
+def isInsideSubgrid(x, y, gridX, gridY, width, height):
+  return x >= gridX and x <= (width + gridX - 1) and y >= gridY and y <= (height + gridY - 1)

@@ -25,7 +25,7 @@ def _loop_grid(seed, startX, startY, width, height):
   notHarvested = []
   
   for _ in range(width * height):
-    nextX, nextY = utils.getNextSubgridPos(width, height, startX, startY)
+    nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
     if can_harvest():
       harvest()
     if seed == Entities.Bush:
@@ -46,7 +46,7 @@ def _loop_grid(seed, startX, startY, width, height):
   toHarvestTotal = width * height
   utils.moveTo(startX, startY)
   for _ in range(toHarvestTotal):
-    nextX, nextY = utils.getNextSubgridPos(width, height, startX, startY)
+    nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
     crop = get_entity_type()
     if can_harvest():
       harvest()
@@ -68,19 +68,31 @@ def _loop_grid(seed, startX, startY, width, height):
       utils.sleep(0.1)
     
   
+def _exec():
+  global seed
+  global maxDrones
+  global width
+  global height
+  global runs
 
-if __name__ == "__main__":
   clear()
-  seed = Entities.Carrot
   utils.moveTo(0, 0)
-  runs = 1
 
   item = utils.seedToItem(seed)
   startAmount = num_items(item)
 
-  start(seed, WORLD_SIZE, WORLD_SIZE, runs, None)
+  start(seed, width, height, runs, maxDrones)  
+  drones.waitForAllDronesToFinish()
 
-  drones.waitForAllDronesToFinish()
-  drones.waitForAllDronesToFinish()
   endAmount = num_items(item)
   quick_print("Harvested", endAmount - startAmount, "of", item)
+
+if __name__ == "__main__":
+  quick_print("### DISABLE FOR SIMULATION ###")
+  seed = Entities.Grass
+  runs = 1
+  maxDrones = max_drones()
+  width = WORLD_SIZE
+  height = WORLD_SIZE
+
+  _exec()

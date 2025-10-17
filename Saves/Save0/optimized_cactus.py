@@ -2,45 +2,12 @@ import utils
 import drones
 from globals import WORLD_SIZE, ORIENTATION_UPDOWN, ORIENTATION_LEFTRIGHT
 
-def _sort_columns(maxX, maxY, startX, startY):
-  # sort columns
-  for x in range(maxX):
-    n = maxY
-    swapped = True
-    while swapped:
-      swapped = False
-      utils.moveTo(startX, startY)
-      for y in range(n - 1):
-        if not _is_next_cactus_bigger(North):
-          swap(North)
-          swapped = True
-        move(North)
-      n -= 1
-      if not swapped:
-        break
-
-def _sort_rows(maxX, maxY, startX, startY):
-  for x in range(maxY):
-    n = maxX
-    swapped = True
-    while swapped:
-      swapped = False
-      utils.moveTo(startX, startY)
-      for y in range(n - 1):
-        if not _is_next_cactus_bigger(East):
-          swap(East)
-          swapped = True
-        move(East)
-      n -= 1
-      if not swapped:
-        break
-
 def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
   seed = Entities.Cactus
   def run():
     addFertilizer = num_items(Items.Weird_Substance) < 10000
     for _ in range(maxX * maxY):
-      nextX, nextY = utils.getNextSubgridPos(maxX, maxY, startX, startY)
+      nextX, nextY = utils.getNextSubgridPos(startX, startY, maxX, maxY)
       
       if can_harvest():
         harvest()
@@ -60,14 +27,6 @@ def _drone_sort_rows(maxX, maxY, startX, startY):
     _sort_line_two_way(startX, maxX, ORIENTATION_LEFTRIGHT)
     # _sort_rows(maxX, maxY, startX, startY)
   return run
-
-
-def _is_next_cactus_bigger(direction):
-  selfSize = measure()
-  nextSize = measure(direction)
-  if nextSize != None and selfSize <= nextSize:
-    return True
-  return False 
 
 def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
   _min = startPos
@@ -158,12 +117,11 @@ def start(_maxWidth, _maxHeight, _maxDrones = None):
     harvest()
   return num_items(Items.Cactus) - beforeCount
 
-if __name__ == "__main__":
-  runs = 2
-  width = WORLD_SIZE
-  height = WORLD_SIZE
-  maxDrones = max_drones()
-  minCactus = 1000000
+def _exec():
+  global maxDrones
+  global width
+  global height
+  global runs
 
   harvested = 0
   startTime = get_time()
@@ -172,3 +130,14 @@ if __name__ == "__main__":
     harvested += start(width, height, maxDrones)
   end = get_time()
   quick_print("Harvested", harvested, "(" + str(width*height) + " plots)", "in", end - startTime, "seconds using", maxDrones, "drones")
+
+if __name__ == "__main__":
+  quick_print("### DISABLE FOR SIMULATION ###")
+  runs = 1
+  maxDrones = max_drones()
+  width = get_world_size()
+  height = get_world_size()
+  
+  _exec()
+  
+  
