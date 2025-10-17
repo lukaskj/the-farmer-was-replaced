@@ -1,0 +1,7 @@
+**/**
+*
+!.gitignore
+!Saves
+!Saves/*
+!Saves/**/*
+save.json
