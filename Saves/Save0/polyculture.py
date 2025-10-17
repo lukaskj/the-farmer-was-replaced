@@ -1,27 +1,10 @@
 import utils
 import drones
 
-# [
-#   [0,0,8,8],
-#   [8,0,8,8],
-#   [16,0,8,8],
-#   [24,0,8,8],
-#   [0,8,8,8],
-#   [8,8,8,8],
-#   [16,8,8,8],
-#   [24,8,8,8],
-#   [0,16,8,8],
-#   [8,16,8,8],
-#   [16,16,8,8],
-#   [24,16,8,8],
-#   [0,24,8,8],
-#   [8,24,8,8],
-#   [16,24,8,8],
-#   [24,24,8,8]
-# ]
 def _dronePolyculture(seed, startX, startY, width, height):
+  isFirstDrone = startX == 0 and startY == 0
   crops = []
-  sources = []
+  sources = []  
 
   middleX = (startX + ((width - 1) / 2)) // 1
   middleY = (startY + ((height - 1) / 2)) // 1
@@ -32,19 +15,17 @@ def _dronePolyculture(seed, startX, startY, width, height):
     sources.append(curPos)
 
     _maxInsideGridIteration = 10
-    
-    foundCompanionInGrid = False
-    for i in range(_maxInsideGridIteration):
+    for _ in range(_maxInsideGridIteration):
       utils.plantSeed(seed)
       if utils.canUseWater(1):
         use_item(Items.Water)
       companion = get_companion()
       if companion != None:
         companionSeed, companionPos = companion
-        if companionPos in sources or not utils.isInsideSubgrid(companionPos[0], companionPos[1], startX, startY, width, height):
+        if companionPos in sources:
           continue
-        
-        foundCompanionInGrid = True        
+        if not utils.isInsideSubgrid(companionPos[0], companionPos[1], startX, startY, width, height):
+          continue
         crops.append((curPos, companionSeed, companionPos))
         break
     
@@ -55,6 +36,7 @@ def _dronePolyculture(seed, startX, startY, width, height):
   # Plant all companions
   for companion in crops:
     (sourceX, sourceY), companionSeed, (companionX, companionY) = companion
+
     utils.moveTo(companionX, companionY)
 
     groundCrop = get_entity_type()
@@ -110,10 +92,11 @@ def _exec():
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
   seed = Entities.Carrot
-  runs = 1500
+  runs = 1000
   maxDrones = (max_drones() / 2) // 1
   width = get_world_size()
   height = get_world_size()
+  # set_execution_speed(1)
 
   _exec()
 

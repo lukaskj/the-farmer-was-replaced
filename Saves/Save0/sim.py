@@ -1,7 +1,8 @@
 import utils
-speed = 64
+speed = 1000
 scriptName = "z_test"
 scriptName = "polyculture"
+scriptName = "optimized_cactus"
 # scriptName = "docs1"
 
 
@@ -11,8 +12,9 @@ sim_globals = {
   "width": get_world_size(),
   "height": get_world_size(),
   "runs": 1,
+  "leaderboardMin": 33554432,
 }
-simSeed = 0
+simSeed = -1
 
 utils.moveTo(0, 0)
 sim_items = {}

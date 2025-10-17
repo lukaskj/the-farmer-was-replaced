@@ -1,4 +1,7 @@
-from globals import w, h, SEEDS_TO_GROUND, ITEM_TO_SEED, SEED_TO_ITEM
+from globals import SEEDS_TO_GROUND, ITEM_TO_SEED, SEED_TO_ITEM
+
+w = get_world_size()
+h = get_world_size()
 
 def isEven(n):
   return n % 2 == 0
@@ -296,3 +299,7 @@ def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):
 
 def isInsideSubgrid(x, y, gridX, gridY, width, height):
   return x >= gridX and x <= (width + gridX - 1) and y >= gridY and y <= (height + gridY - 1)
+
+
+def round(floatN):
+  return floatN // 1

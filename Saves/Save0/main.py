@@ -1,4 +1,3 @@
-from globals import w, h
 import utils
 import drones
 import optimized_cactus
@@ -8,7 +7,7 @@ import plant_pumpkin
 change_hat(Hats.Wizard_Hat)
 
 logPrefix = "[*]"
-quick_print(logPrefix, "World size: " + str(w) + "x" + str(h))
+quick_print(logPrefix, "World size: " + str(get_world_size()) + "x" + str(get_world_size()))
 quick_print("")
 # clear()
 

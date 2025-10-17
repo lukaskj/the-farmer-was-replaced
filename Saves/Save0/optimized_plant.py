@@ -1,4 +1,3 @@
-from globals import WORLD_SIZE
 import utils
 import drones
 
@@ -84,7 +83,7 @@ if __name__ == "__main__":
   seed = Entities.Sunflower
   runs = 1500
   maxDrones = max_drones()
-  width = WORLD_SIZE
-  height = WORLD_SIZE
+  width = get_world_size()
+  height = get_world_size()
 
   _exec()

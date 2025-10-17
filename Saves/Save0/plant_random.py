@@ -1,9 +1,8 @@
 import utils
-from globals import w, h
 
 def start():
-  lenY = h
-  lenX = w
+  lenY = get_world_size()
+  lenX = get_world_size()
 
   col, row = utils.getPos()
   x = col % lenX

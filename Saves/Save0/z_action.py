@@ -1,4 +1,8 @@
 import utils
-utils.moveTo(28,24)
+#utils.moveTo(28,24)
 #harvest()
-quick_print(get_ground_type())
+
+set_execution_speed(1)
+utils.plantSeed(Entities.Cactus)
+measure()
+measure(North)

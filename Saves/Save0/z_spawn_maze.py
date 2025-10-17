@@ -1,5 +1,5 @@
 plant(Entities.Bush)
 substance = get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
 #use_item(Items.Weird_Substance, substance)
-quick_print(substance)
-use_item(Items.Weird_Substance, 48)
+#quick_print(substance)
+use_item(Items.Weird_Substance, 64)

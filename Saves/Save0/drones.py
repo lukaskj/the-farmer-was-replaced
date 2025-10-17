@@ -7,32 +7,6 @@ def spawnDrone(fnc):
     _drones.append(droneId)
   return droneId
 
-def waitForIdleDrone(maxDrones = None):
-  global _drones
-  if maxDrones == None:
-    maxDrones = max_drones()
-  def fnc():
-    if maxDrones > len(_drones):
-      return True
-    for drone in _drones:
-      if has_finished(drone):
-        return True
-    return False
-
-  utils.waitFor(fnc)
-
-def waitForAllDronesToFinish():
-  global _drones
-  def fnc():
-    totalFinished = 0
-    for drone in _drones:
-      if has_finished(drone):
-        totalFinished += 1
-    return len(_drones) == totalFinished
-
-  utils.waitFor(fnc)
-  _drones = []
-
 def spawnDroneInGrid(fnc, width, height, maxDrones = None):
   if maxDrones == None:
     maxDrones = max_drones()
@@ -49,5 +23,46 @@ def spawnDroneInGrid(fnc, width, height, maxDrones = None):
       fnc(coords)()
       quick_print("DEBUG: Executing the last grid as main drone")
 
-  # def __spawnAndExecute(fnc):
-  # return __spawnAndExecute
+def wrapper(fnc, arg1=None, arg2=None, arg3=None, arg4=None, arg5=None, arg6=None):
+  def __():
+    if arg1==None:
+      return fnc()
+    if arg2==None:
+      return fnc(arg1)
+    if arg3==None:
+      return fnc(arg1, arg2)
+    if arg4==None:
+      return fnc(arg1, arg2, arg3)
+    if arg5==None:
+      return fnc(arg1, arg2, arg3, arg4)
+    if arg6==None:
+      return fnc(arg1, arg2, arg3, arg4, arg5)
+  return __
+
+def waitForIdleDrone(maxDrones = None):
+  global _drones
+  if maxDrones == None:
+    maxDrones = max_drones()
+  def fnc():
+    if maxDrones > len(_drones):
+      return True
+    hasIdle = False
+    for drone in _drones:
+      if has_finished(drone):
+        _drones.remove(drone)
+        hasIdle = True
+    return hasIdle
+
+  utils.waitFor(fnc)
+
+def waitForAllDronesToFinish():
+  global _drones
+  def fnc():
+    totalFinished = 0
+    for drone in _drones:
+      if has_finished(drone):
+        totalFinished += 1
+    return len(_drones) == totalFinished
+
+  utils.waitFor(fnc)
+  _drones = []
