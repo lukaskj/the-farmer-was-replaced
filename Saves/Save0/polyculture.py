@@ -27,7 +27,7 @@ def _dronePolyculture(seed, startX, startY, width, height):
   middleY = (startY + ((height - 1) / 2)) // 1
   
   utils.moveTo(middleX, middleY)  
-  for _ in range(5):
+  for i in range(5):
     curPos = utils.getPos()
     sources.append(curPos)
 
@@ -48,6 +48,8 @@ def _dronePolyculture(seed, startX, startY, width, height):
         crops.append((curPos, companionSeed, companionPos))
         break
     
+    # if utils.isInsideSubgrid(curX + i, curY + i, startX, startY, width, height):
+    #   utils.moveTo(curX + 1, curY + 1)
     utils.moveToNextSubgridPos(startX, startY, width, height)
   
   # Plant all companions
@@ -107,8 +109,8 @@ def _exec():
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  seed = Entities.Tree
-  runs = 5
+  seed = Entities.Carrot
+  runs = 1500
   maxDrones = (max_drones() / 2) // 1
   width = get_world_size()
   height = get_world_size()

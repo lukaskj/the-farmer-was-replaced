@@ -80,7 +80,7 @@ def _exec():
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  runs = 1
+  runs = 150
   maxDrones = max_drones()
   width = get_world_size()
   height = get_world_size()

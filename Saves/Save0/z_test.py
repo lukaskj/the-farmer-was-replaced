@@ -4,33 +4,35 @@ import drones
 # set_execution_speed(0.7)
 # Test each drone spawn location with till
 
-def _droneCode(startX, startY, width, height):
+def _droneCode(startX, startY, width, height, shared):
   firstDrone = startX == 0 and startY == 0
   # if firstDrone:
   #   change_hat(Hats.Wizard_Hat)
-  
-  for _ in range(width * height):
-    nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
-    if firstDrone:
-      utils.plantSeed(Entities.Cactus)
-    else:
-      utils.plantSeed(Entities.Carrot)
-    utils.moveTo(nextX, nextY)
-  # utils.moveTo(startX, startY)
-  # utils.plantSeed(Entities.Bush)
-  # utils.moveTo(startX + width - 1, startY + height - 1)  
-  # utils.plantSeed(Entities.Carrot)
+  utils.sleep(5)
+  quick_print("Drone code started", shared)
+  while True:
+    quick_print(shared)
+    utils.sleep(0.2)  
 
 def __newDrone():
-  def __init(grid):
+  shared = {
+    "data": False
+  }
+  def __init(grid, mainDrone = False):
     startX, startY, width, height = grid
     def __():
-      _droneCode(startX, startY, width, height)
+      quick_print("Started", shared)
+      _droneCode(startX, startY, width, height, shared)
+      if mainDrone:
+        shared["data"] = True
     return __
   return __init
 
 def exec():
-  drones.spawnDroneInGrid(__newDrone(), get_world_size(), get_world_size(), max_drones())
+  dddd = __newDrone()
+  drones.spawnDroneInGrid(dddd, get_world_size(), get_world_size(), 2)
+  quick_print("Starting main drone")
+  dddd((0, 5, 1, 1), True)
 
 if __name__ == "__main__":
   clear()

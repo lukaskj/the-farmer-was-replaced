@@ -81,8 +81,8 @@ def _exec():
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  seed = Entities.Grass
-  runs = 1
+  seed = Entities.Sunflower
+  runs = 1500
   maxDrones = max_drones()
   width = WORLD_SIZE
   height = WORLD_SIZE

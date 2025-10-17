@@ -2,7 +2,7 @@ import utils
 speed = 64
 scriptName = "z_test"
 scriptName = "polyculture"
-# scriptName = "plant_pumpkin"
+# scriptName = "docs1"
 
 
 sim_globals = {
