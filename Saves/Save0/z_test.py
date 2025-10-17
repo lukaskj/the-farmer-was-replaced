@@ -1,15 +1,25 @@
 import utils
 import drones
 #till()
-clear()
-
+# set_execution_speed(0.7)
 # Test each drone spawn location with till
 
 def _droneCode(startX, startY, width, height):
-  utils.moveTo(startX, startY)
-  utils.plantSeed(Entities.Bush)
-  utils.moveTo(startX + width - 1, startY + height - 1)  
-  utils.plantSeed(Entities.Carrot)
+  firstDrone = startX == 0 and startY == 0
+  # if firstDrone:
+  #   change_hat(Hats.Wizard_Hat)
+  
+  for _ in range(width * height):
+    nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
+    if firstDrone:
+      utils.plantSeed(Entities.Cactus)
+    else:
+      utils.plantSeed(Entities.Carrot)
+    utils.moveTo(nextX, nextY)
+  # utils.moveTo(startX, startY)
+  # utils.plantSeed(Entities.Bush)
+  # utils.moveTo(startX + width - 1, startY + height - 1)  
+  # utils.plantSeed(Entities.Carrot)
 
 def __newDrone():
   def __init(grid):

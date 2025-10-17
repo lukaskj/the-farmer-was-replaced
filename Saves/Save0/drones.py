@@ -37,10 +37,9 @@ def spawnDroneInGrid(fnc, width, height, maxDrones = None):
   if maxDrones == None:
     maxDrones = max_drones()
   maxDrones = min(maxDrones, min(width, height))
+
   grids = utils.calculateSubgrids(width, height, maxDrones)
-  quick_print("grids", len(grids), "maxDrones", maxDrones, grids)
   i = 0
-  
   for coords in grids:
     i += 1
     x, y, width, height = coords

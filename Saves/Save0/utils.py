@@ -128,14 +128,11 @@ def getGroundToPlant(seed):
   
   return curGround != ground, ground
 
-def plantSeed(seed, addFertilizer = False):
+def plantSeed(seed, force = False):
   souldTill, _ = getGroundToPlant(seed)
   if souldTill:
     till()
   planted = plant(seed)
-
-  if addFertilizer:
-    use_item(Items.Fertilizer)
 
   return planted
 
@@ -238,6 +235,7 @@ def getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
 def moveToNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
   nextX, nextY = getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height)
   moveTo(nextX, nextY)
+  return nextX, nextY
 
 # AI generated
 def calculateSubgrids(gridWidth, gridHeight, maxSubgrids):

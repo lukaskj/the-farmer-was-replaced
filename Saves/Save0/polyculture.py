@@ -1,40 +1,73 @@
 import utils
 import drones
-from globals import WORLD_SIZE
 
+# [
+#   [0,0,8,8],
+#   [8,0,8,8],
+#   [16,0,8,8],
+#   [24,0,8,8],
+#   [0,8,8,8],
+#   [8,8,8,8],
+#   [16,8,8,8],
+#   [24,8,8,8],
+#   [0,16,8,8],
+#   [8,16,8,8],
+#   [16,16,8,8],
+#   [24,16,8,8],
+#   [0,24,8,8],
+#   [8,24,8,8],
+#   [16,24,8,8],
+#   [24,24,8,8]
+# ]
 def _dronePolyculture(seed, startX, startY, width, height):
   crops = []
-  utils.moveTo(startX, startY)
-  for _ in range(3):
-    # continue
-    curPos = utils.getPos()
-    # nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
-    nextX, nextY = curPos
+  sources = []
 
-    utils.plantSeed(seed)
-    if utils.canUseWater(1):
-      use_item(Items.Water)
-
-    companion = get_companion()
-    if companion != None:
-      crops.append((curPos, companion[0], companion[1]))
-    utils.moveTo(nextX + 1, nextY + 1)
+  middleX = (startX + ((width - 1) / 2)) // 1
+  middleY = (startY + ((height - 1) / 2)) // 1
   
+  utils.moveTo(middleX, middleY)  
+  for _ in range(5):
+    curPos = utils.getPos()
+    sources.append(curPos)
+
+    _maxInsideGridIteration = 10
+    
+    foundCompanionInGrid = False
+    for i in range(_maxInsideGridIteration):
+      utils.plantSeed(seed)
+      if utils.canUseWater(1):
+        use_item(Items.Water)
+      companion = get_companion()
+      if companion != None:
+        companionSeed, companionPos = companion
+        if companionPos in sources or not utils.isInsideSubgrid(companionPos[0], companionPos[1], startX, startY, width, height):
+          continue
+        
+        foundCompanionInGrid = True        
+        crops.append((curPos, companionSeed, companionPos))
+        break
+    
+    utils.moveToNextSubgridPos(startX, startY, width, height)
+  
+  # Plant all companions
   for companion in crops:
     (sourceX, sourceY), companionSeed, (companionX, companionY) = companion
     utils.moveTo(companionX, companionY)
 
     groundCrop = get_entity_type()
-    if groundCrop != seed:
+    if groundCrop != companionSeed:
       if can_harvest():
         harvest()
-      else:
-        till()
-      utils.plantSeed(companionSeed)
+      utils.plantSeed(companionSeed, True)
+  
+  # Harvest all sources
+  for source in sources:
+    (sourceX, sourceY) = source
     
-    utils.moveTo(sourceX, sourceY)    
+    utils.moveTo(sourceX, sourceY)
     if not can_harvest() and get_entity_type() != None:
-      utils.waitFor(can_harvest)    
+      utils.waitFor(can_harvest)
     harvest()
 
 def __newDrone(seed, runs = 1):
@@ -74,9 +107,9 @@ def _exec():
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  seed = Entities.Carrot
+  seed = Entities.Tree
   runs = 5
-  maxDrones = max_drones()
+  maxDrones = (max_drones() / 2) // 1
   width = get_world_size()
   height = get_world_size()
 

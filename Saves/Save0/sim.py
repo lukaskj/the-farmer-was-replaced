@@ -6,7 +6,7 @@ scriptName = "polyculture"
 
 
 sim_globals = {
-  "seed": Entities.Grass,
+  "seed": Entities.Tree,
   "maxDrones": max_drones(),
   "width": get_world_size(),
   "height": get_world_size(),
