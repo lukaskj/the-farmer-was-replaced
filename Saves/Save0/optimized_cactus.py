@@ -32,76 +32,68 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
   if orientation == ORIENTATION_UPDOWN:
     increasingDirection = North
     decreasingDirection = South
-  
+
   direction = increasingDirection
 
   while _min < _max:
-    swappedMin = False
-    swappedMax = False
+    swappedForward = False
+    swappedBackward = False
 
     # Forward pass - move in increasing direction
     for _ in range(_max - _min):
       measureSelf = measure()
       measureNext = measure(direction)
-      
 
       if measureSelf != None and measureNext != None and measureSelf > measureNext:
         swap(direction)
-        swappedMax = True
-      
-      
-      
-      # Get current position to check if we've reached the boundary
+        swappedForward = True
+
+      # Check if we've reached max boundary
       if orientation == ORIENTATION_LEFTRIGHT:
         pos = get_pos_x()
       else:
         pos = get_pos_y()
       
-      # Stop if we've reached the max boundary
       if pos >= _max - 2:
         break
 
       move(direction)
-    
-    # Decrease max boundary after forward pass
+
+    # Update boundary and change direction
     _max -= 1
-    
-    # Exit early if already sorted
-    if not swappedMax:
-      break
-    
-    # Switch direction for backward pass
     direction = decreasingDirection
-    
+
+    # Early exit if sorted
+    if not swappedForward:
+      break
+
     # Backward pass - move in decreasing direction
     for _ in range(_max - _min):
       measureSelf = measure()
       measureNext = measure(direction)
-      
+
       if measureSelf != None and measureNext != None and measureSelf < measureNext:
         swap(direction)
-        swappedMin = True
-      
-      # Get current position to check if we've reached the boundary
+        swappedBackward = True
+
+      # Check if we've reached min boundary
       if orientation == ORIENTATION_LEFTRIGHT:
         pos = get_pos_x()
       else:
         pos = get_pos_y()
       
-      # Stop if we've reached the min boundary
       if pos <= _min + 1:
         break
 
       move(direction)
-    
-    # Increase min boundary after backward pass
+
+    # Update boundary and change direction
     _min += 1
-    
-    # Exit early if already sorted
-    if not swappedMin:
-      break
-    
     direction = increasingDirection
+
+    # Early exit if sorted
+    if not swappedBackward:
+      break
 
 def start(_maxWidth, _maxHeight, _maxDrones = None):
   utils.moveTo(0, 0)
