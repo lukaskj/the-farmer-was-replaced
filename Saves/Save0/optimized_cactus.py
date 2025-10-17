@@ -8,22 +8,15 @@ def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
     # addFertilizer = num_items(Items.Weird_Substance) < 10000
     addFertilizer = False
     for _ in range(maxX * maxY):
-      nextX, nextY = utils.getNextSubgridPos(startX, startY, maxX, maxY)
       
-      # if can_harvest():
-      #   harvest()
       utils.plantSeed(seed, addFertilizer)
 
-      measureSelf = measure()
-      measurePrev = measure(South)
-      
-      if measureSelf != None and measurePrev != None and measureSelf < measurePrev:
-        swap(South)
-
-      utils.moveTo(nextX, nextY)
+      # nextX, nextY = utils.getNextSubgridPos(startX, startY, maxX, maxY)
+      # utils.moveTo(nextX, nextY)
+      utils.moveToNextSubgridPos(startX, startY, maxX, maxY)
     
     utils.moveTo(startX, startY)
-    _sort_line_two_way(startY, maxY - 1, ORIENTATION_UPDOWN)
+    _sort_line_two_way(startY, maxY, ORIENTATION_UPDOWN)
         
   return run
 
@@ -36,7 +29,7 @@ def _drone_sort_rows(maxX, maxY, startX, startY):
 
 def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
   _min = startPos
-  _max = maxLen
+  _max = min(_min + maxLen, get_world_size())
 
   increasingDirection = East
   decreasingDirection = West
@@ -49,19 +42,18 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
   while _min < _max:
     swappedMin = False
     swappedMax = False
-    
-    direction = increasingDirection
 
     # Forward pass - move in increasing direction
     for _ in range(_max - _min):
       measureSelf = measure()
       measureNext = measure(direction)
       
+
       if measureSelf != None and measureNext != None and measureSelf > measureNext:
         swap(direction)
         swappedMax = True
       
-      move(direction)
+      
       
       # Get current position to check if we've reached the boundary
       if orientation == ORIENTATION_LEFTRIGHT:
@@ -70,8 +62,10 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
         pos = get_pos_y()
       
       # Stop if we've reached the max boundary
-      if pos >= _max - 1:
+      if pos >= _max - 2:
         break
+
+      move(direction)
     
     # Decrease max boundary after forward pass
     _max -= 1
@@ -88,11 +82,9 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
       measureSelf = measure()
       measureNext = measure(direction)
       
-      if measureSelf < measureNext:
+      if measureSelf != None and measureNext != None and measureSelf < measureNext:
         swap(direction)
         swappedMin = True
-      
-      move(direction)
       
       # Get current position to check if we've reached the boundary
       if orientation == ORIENTATION_LEFTRIGHT:
@@ -101,8 +93,10 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
         pos = get_pos_y()
       
       # Stop if we've reached the min boundary
-      if pos <= _min:
+      if pos <= _min + 1:
         break
+
+      move(direction)
     
     # Increase min boundary after backward pass
     _min += 1
@@ -110,6 +104,8 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
     # Exit early if already sorted
     if not swappedMin:
       break
+    
+    direction = increasingDirection
 
 def start(_maxWidth, _maxHeight, _maxDrones = None):
   utils.moveTo(0, 0)
@@ -169,6 +165,23 @@ def _exec():
   quick_print("Harvested (new)", harvested, "(" + str(width*height) + " plots)", "in", totalTime, "seconds using", maxDrones, "drones")
   quick_print("Average:", harvested / totalTime, "per second")
 
+
+def _exec2():
+  clear()
+  set_world_size(12)
+  startX = 0
+  startY = 5
+  lineLength = get_world_size()
+  utils.moveTo(startX, startY)
+  for _ in range(lineLength):
+    utils.plantSeed(Entities.Cactus)
+    move(East)
+  utils.moveTo(startX, startY)
+  set_execution_speed(3)
+  _sort_line_two_way(startX, lineLength, ORIENTATION_LEFTRIGHT)
+  
+
+
 if __name__ == "__main__":
   # quick_print("### DISABLE FOR SIMULATION ###")
   
@@ -187,5 +200,7 @@ if __name__ == "__main__":
   # leaderboardMin = 131072
   
   _exec()
+
+
   
   
