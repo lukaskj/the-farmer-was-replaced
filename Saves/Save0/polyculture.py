@@ -37,17 +37,18 @@ def _dronePolyculture(seed, startX, startY, width, height):
       utils.waitFor(can_harvest)    
     harvest()
 
-def __testDrone(seed):
-  def run(gridData):
+def __newDrone(seed, runs = 1):
+  def __init(gridData):
     startX, startY, width, height = gridData
     def __():
-      _dronePolyculture(seed, startX, startY, width, height)
+      for _ in range(runs):
+        _dronePolyculture(seed, startX, startY, width, height)
     return __
-  return run
+  return __init
 
-def start(seed, w, h, maxDrones = None):
-  drones.droneGrid(w, h, __testDrone(seed), maxDrones)
-  drones.waitForAllDronesToFinish()
+def start(seed, w, h, runs = 1, maxDrones = None):
+  drones.spawnDroneInGrid(__newDrone(seed, runs), w, h, maxDrones)
+  
 
 def _exec():
   global seed
@@ -63,8 +64,8 @@ def _exec():
   startAmount = num_items(item)
   startTime = get_time()
 
-  for _ in range(runs):
-    start(seed, width, height, maxDrones)
+  start(seed, width, height, runs, maxDrones)
+  drones.waitForAllDronesToFinish()
   
   endTime = get_time()
   endAmount = num_items(item)
@@ -72,12 +73,12 @@ def _exec():
     
 
 if __name__ == "__main__":
-  # quick_print("### DISABLE FOR SIMULATION ###")
-  # seed = Entities.Grass
-  # runs = 1
-  # maxDrones = max_drones()
-  # width = get_world_size()
-  # height = get_world_size()
+  quick_print("### DISABLE FOR SIMULATION ###")
+  seed = Entities.Carrot
+  runs = 5
+  maxDrones = max_drones()
+  width = get_world_size()
+  height = get_world_size()
 
   _exec()
 

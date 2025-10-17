@@ -39,18 +39,18 @@ def _droneCode(seed, startX, startY, width, height):
         deadPlants.remove((x, y))
 
 
-def __spawnDrone(seed):
-  def _start(grid):
+def __newDrone(seed):
+  def _init(grid):
     startX, startY, width, height = grid
     def __():
       _droneCode(seed, startX, startY, width, height)
     return __
-  return _start
+  return _init
 
 def start(seed, w, h, maxDrones = None, runs = 1):
   seed = Entities.Pumpkin
   for _ in range(runs):
-    drones.droneGrid(w, h, __spawnDrone(seed), maxDrones)
+    drones.spawnDroneInGrid(__newDrone(seed), w, h, maxDrones)
     drones.waitForAllDronesToFinish()
     if can_harvest():
       harvest()

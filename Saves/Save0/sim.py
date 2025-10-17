@@ -1,7 +1,7 @@
 import utils
 speed = 64
-scriptName = "optimized_plant"
-# scriptName = "polyculture"
+scriptName = "z_test"
+scriptName = "polyculture"
 # scriptName = "plant_pumpkin"
 
 

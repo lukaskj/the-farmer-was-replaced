@@ -3,22 +3,16 @@ import utils
 import drones
 
 def start(seed, w, h, runs = 1, maxDrones = None):
-  if maxDrones == None:
-    maxDrones = max_drones() - 1
-  maxDrones = min(maxDrones, min(w, h))
-  grids = utils.calculateSubgrids(w, h, maxDrones)
+  drones.spawnDroneInGrid(__newDrone(seed, runs), w, h, maxDrones)
 
-  for coords in grids:
-    x, y, width, height = coords
-    utils.moveTo(x, y)
-    
-    drones.spawnDrone(_spawn_drone(seed, x, y, width, height, runs))
-
-def _spawn_drone(seed, startX, startY, width, height, runs = 1):
-  def run():
-    for _ in range(runs):
-      _loop_grid(seed, startX, startY, width, height)
-  return run
+def __newDrone(seed, runs = 1):
+  def __init(coords):
+    startX, startY, width, height = coords
+    def __():
+      for _ in range(runs):
+        _loop_grid(seed, startX, startY, width, height)
+    return __
+  return __init
 
 def _loop_grid(seed, startX, startY, width, height):
   utils.moveTo(startX, startY)
@@ -38,8 +32,6 @@ def _loop_grid(seed, startX, startY, width, height):
       utils.plantSeed(seed)
     if (seed == Entities.Sunflower or seed == Entities.Bush or seed == Entities.Tree) and utils.canUseWater(width * height):
       use_item(Items.Water)
-      
-
     utils.moveTo(nextX, nextY)
 
   harvestedTotal = 0
@@ -81,7 +73,7 @@ def _exec():
   item = utils.seedToItem(seed)
   startAmount = num_items(item)
 
-  start(seed, width, height, runs, maxDrones)  
+  start(seed, width, height, runs, None)  
   drones.waitForAllDronesToFinish()
 
   endAmount = num_items(item)

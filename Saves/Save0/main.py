@@ -4,7 +4,6 @@ import drones
 import optimized_cactus
 import optimized_plant
 import plant_pumpkin
-import plant_sunflower
 
 change_hat(Hats.Wizard_Hat)
 
