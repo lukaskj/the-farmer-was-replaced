@@ -5,14 +5,10 @@ from globals import ORIENTATION_UPDOWN, ORIENTATION_LEFTRIGHT
 def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
   seed = Entities.Cactus
   def run():
-    # addFertilizer = num_items(Items.Weird_Substance) < 10000
-    addFertilizer = False
     for _ in range(maxX * maxY):
       
-      utils.plantSeed(seed, addFertilizer)
+      utils.plantSeed(seed)
 
-      # nextX, nextY = utils.getNextSubgridPos(startX, startY, maxX, maxY)
-      # utils.moveTo(nextX, nextY)
       utils.moveToNextSubgridPos(startX, startY, maxX, maxY)
     
     utils.moveTo(startX, startY)
