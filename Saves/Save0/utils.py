@@ -1,8 +1,5 @@
 from globals import SEEDS_TO_GROUND, ITEM_TO_SEED, SEED_TO_ITEM
 
-w = get_world_size()
-h = get_world_size()
-
 def isEven(n):
   return n % 2 == 0
 
@@ -54,6 +51,7 @@ def sortCoordinates(tuples):
   return tuples
 
 def moveTo(toX, toY):
+  w, h = get_world_size(), get_world_size()
   curX, curY = getPos()  
   halfX = w / 2
   halfY = h / 2
@@ -162,7 +160,8 @@ def waitFor(fnc, _sleep = 0.2):
   result = fnc()
   while result == None or result == False:
     result = fnc()
-    sleep(_sleep)
+    if _sleep > 0:
+      sleep(_sleep)
   return result
 
 
@@ -170,7 +169,7 @@ def waitFor(fnc, _sleep = 0.2):
 def __default_compare(a, b):
   return a <= b
 
-def _partition(arr, low, high, compare_fn):
+def _partition(arr, low, high, compareFn):
   # Choose rightmost element as pivot
   pivot = arr[high]
   # Pointer for greater element
@@ -178,7 +177,7 @@ def _partition(arr, low, high, compare_fn):
   
   # Compare each element with pivot using compare_fn
   for j in range(low, high):
-    if compare_fn(arr[j], pivot):
+    if compareFn(arr[j], pivot):
       # If element should come before pivot according to compare_fn
       # swap it with the greater element pointed by i
       i += 1
@@ -189,7 +188,7 @@ def _partition(arr, low, high, compare_fn):
   # Return the partition point
   return i + 1
 
-def __quicksort_helper(arr, low, high, compare_fn):
+def __quicksortHelper(arr, low, high, compare_fn):
   if low < high:
     # Find pivot element such that
     # elements that compare true are on the left
@@ -197,18 +196,18 @@ def __quicksort_helper(arr, low, high, compare_fn):
     pi = _partition(arr, low, high, compare_fn)
     
     # Recursively sort elements before and after partition
-    __quicksort_helper(arr, low, pi - 1, compare_fn)
-    __quicksort_helper(arr, pi + 1, high, compare_fn)
+    __quicksortHelper(arr, low, pi - 1, compare_fn)
+    __quicksortHelper(arr, pi + 1, high, compare_fn)
 
-def sort(list, compare_fn=None):
+def sort(list, compareFn=None):
   if not list:
     return list
   
   # Use default comparison if none provided
-  if compare_fn == None:
-    compare_fn = __default_compare
+  if compareFn == None:
+    compareFn = __default_compare
     
-  __quicksort_helper(list, 0, len(list) - 1, compare_fn)
+  __quicksortHelper(list, 0, len(list) - 1, compareFn)
   return list
 
 def getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
@@ -237,8 +236,12 @@ def getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
   
   return next_x, next_y
 
-def moveToNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height):
-  nextX, nextY = getNextSubgridPos(offset_x, offset_y, subgrid_width, subgrid_height)
+def moveToNextSubgridPosSimple(gridCoords):
+  startX, startY, subgridWidth, subgridHeight = gridCoords
+  return moveToNextSubgridPos(startX, startY, subgridWidth, subgridHeight)
+
+def moveToNextSubgridPos(startX, startY, subgridWidth, subgridHeight):
+  nextX, nextY = getNextSubgridPos(startX, startY, subgridWidth, subgridHeight)
   moveTo(nextX, nextY)
   return nextX, nextY
 

@@ -7,7 +7,7 @@ def spawnDrone(fnc):
     _drones.append(droneId)
   return droneId
 
-def spawnDroneInGrid(fnc, width, height, maxDrones = None):
+def spawnDronesInGrid(fnc, width, height, maxDrones = None):
   if maxDrones == None:
     maxDrones = max_drones()
   maxDrones = min(maxDrones, min(width, height))
@@ -17,16 +17,11 @@ def spawnDroneInGrid(fnc, width, height, maxDrones = None):
   droneToCoords = {}
   for coords in grids:
     i += 1
-    x, y, width, height = coords
-    utils.moveTo(x, y)
     droneId = spawnDrone(fnc(coords))
-    executeLastAsMainDrone = droneId == None and i == len(grids)
-    if executeLastAsMainDrone:
-      quick_print("WARNING: Execute the last grid as main drone")
-      # fnc(coords)()
-    else:
+    shouldExecuteLastAsMainDrone = droneId == None and i == len(grids)
+    if not shouldExecuteLastAsMainDrone:
       droneToCoords[droneId] = coords
-  return droneToCoords, executeLastAsMainDrone
+  return shouldExecuteLastAsMainDrone, grids[-1], droneToCoords
 
 def wrapper(fnc, arg1=None, arg2=None, arg3=None, arg4=None, arg5=None, arg6=None):
   def __():
@@ -70,7 +65,7 @@ def waitForIdleDroneAndReturnId(maxDrones = None):
         _drones.remove(drone)
         return drone
     return False
-  return utils.waitFor(fnc, 0.01)
+  return utils.waitFor(fnc, 0)
 
 def waitForAllDronesToFinish():
   global _drones

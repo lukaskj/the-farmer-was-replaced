@@ -50,7 +50,10 @@ def __newDrone(seed):
 def start(seed, w, h, maxDrones = None, runs = 1):
   seed = Entities.Pumpkin
   for _ in range(runs):
-    drones.spawnDroneInGrid(__newDrone(seed), w, h, maxDrones)
+    controller = __newDrone(seed)
+    shouldExecuteLastAsMainDrone, lastGrid, _ = drones.spawnDronesInGrid(controller, w, h, maxDrones)
+    if shouldExecuteLastAsMainDrone:
+      controller(lastGrid)()
     drones.waitForAllDronesToFinish()
     if can_harvest():
       harvest()
@@ -67,21 +70,43 @@ def _exec():
   global width
   global height
   global runs
+  global leaderboardMin
 
   clear()
   utils.moveTo(0, 0)
 
   startTime = get_time()
-  _start = num_items(Items.Pumpkin)
-  start(Entities.Pumpkin, width, height, maxDrones, runs)
-  drones.waitForAllDronesToFinish()
-  quick_print("Harvested", str(num_items(Items.Pumpkin) - _start), "pumpkins in", get_time() - startTime, "seconds")
-    
+  partial = 0
+  total = 0
+  if leaderboardMin > 0:
+    while total < leaderboardMin:
+      partial = num_items(Items.Pumpkin)
+      startTimePartial = get_time()
+      start(Entities.Pumpkin, width, height, maxDrones, 1)
+      endTimePartial = get_time()
+      timeTakenPartial = endTimePartial - startTimePartial
+      partial = num_items(Items.Pumpkin) - partial
+      total += partial
+      quick_print("  (partial) Harvested", partial, "pumpkins in", timeTakenPartial, "seconds. Avg:", partial / timeTakenPartial, "per second")
+  else:
+    start(Entities.Pumpkin, width, height, maxDrones, runs)
+  
+  endTime = get_time()
+  timeTakenTotal = endTime - startTime
+  # drones.waitForAllDronesToFinish()
+  quick_print("Harvested", total, "pumpkins in", timeTakenTotal, "seconds. Avg:", total / timeTakenTotal, "per second")
+
+  leaderboardTime = 200000000 / total * timeTakenTotal / 60
+  quick_print("Full leaderboard run: around", leaderboardTime, "minutes")
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  runs = 150
+
+  leaderboardMin = 20000000
+  # leaderboardMin = 200000000
+  runs = 1
   maxDrones = max_drones()
+  maxDrones = 32
   width = get_world_size()
   height = get_world_size()
 

@@ -2,7 +2,7 @@ import utils
 import drones
 
 def start(seed, w, h, runs = 1, maxDrones = None):
-  drones.spawnDroneInGrid(__newDrone(seed, runs), w, h, maxDrones)
+  drones.spawnDronesInGrid(__newDrone(seed, runs), w, h, maxDrones)
 
 def __newDrone(seed, runs = 1):
   def __init(coords):

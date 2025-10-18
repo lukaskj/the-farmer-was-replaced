@@ -2,7 +2,6 @@ import utils
 import drones
 
 def _dronePolyculture(seed, startX, startY, width, height):
-  isFirstDrone = startX == 0 and startY == 0
   crops = []
   sources = []  
 
@@ -64,7 +63,7 @@ def __newDrone(seed, runs = 1):
   return __init
 
 def start(seed, w, h, runs = 1, maxDrones = None):
-  drones.spawnDroneInGrid(__newDrone(seed, runs), w, h, maxDrones)
+  drones.spawnDronesInGrid(__newDrone(seed, runs), w, h, maxDrones)
   
 
 def _exec():

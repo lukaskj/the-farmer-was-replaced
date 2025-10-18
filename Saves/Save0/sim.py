@@ -1,8 +1,9 @@
 import utils
 speed = 1000
-scriptName = "z_test"
-scriptName = "polyculture"
-#sciptName = "optimized_cactus"
+#scriptName = "z_test"
+#scriptName = "polyculture"
+scriptName = "optimized_cactus"
+scriptName = "plant_pumpkin"
 # scriptName = "docs1"
 
 
@@ -19,7 +20,7 @@ simSeed = 22091989
 utils.moveTo(0, 0)
 sim_items = {}
 for item in Items:
-  sim_items[item] = 10000000
+  sim_items[item] = 1000000000
 
 
 # sim_items = {Items.Carrot : 10000, Items.Hay : 50}
