@@ -173,9 +173,9 @@ def _exec2():
 if __name__ == "__main__":
   # quick_print("### DISABLE FOR SIMULATION ###")
   
-  
-  leaderboardMin = 33554432
-  runs = 1
+  leaderboardMin = None
+  # leaderboardMin = 33554432
+  runs = 100
   maxDrones = max_drones()
   width = get_world_size()
   height = get_world_size()

@@ -2,7 +2,7 @@ import utils
 speed = 1000
 scriptName = "z_test"
 scriptName = "polyculture"
-scriptName = "optimized_cactus"
+#sciptName = "optimized_cactus"
 # scriptName = "docs1"
 
 
@@ -14,7 +14,7 @@ sim_globals = {
   "runs": 1,
   "leaderboardMin": 33554432,
 }
-simSeed = -1
+simSeed = 22091989
 
 utils.moveTo(0, 0)
 sim_items = {}

@@ -159,9 +159,11 @@ def sleep(secondsToWait):
   return
 
 def waitFor(fnc, _sleep = 0.2):
-  while not fnc():
+  result = fnc()
+  while result == None or result == False:
+    result = fnc()
     sleep(_sleep)
-  return True
+  return result
 
 
 # Sort - Quicksort
