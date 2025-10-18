@@ -14,65 +14,75 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
 
   direction = increasingDirection
 
-  while _min < _max:
-    swappedForward = False
-    swappedBackward = False
+  while _min < _max - 1:
+    lastSwapPosForward = _min
+    lastSwapPosBackward = _max
 
     # Forward pass - move in increasing direction
-    for _ in range(_max - _min):
+    # Get current position
+    if orientation == ORIENTATION_LEFTRIGHT:
+      pos = get_pos_x()
+    else:
+      pos = get_pos_y()
+    
+    while pos < _max - 1:
       measureSelf = measure()
       measureNext = measure(direction)
 
       if measureSelf != None and measureNext != None and measureSelf > measureNext:
         swap(direction)
-        swappedForward = True
+        lastSwapPosForward = pos
 
-      # Check if we've reached max boundary
+      move(direction)
+      
+      # Update position
       if orientation == ORIENTATION_LEFTRIGHT:
         pos = get_pos_x()
       else:
         pos = get_pos_y()
-      
-      if pos >= _max - 2:
-        break
 
-      move(direction)
-
-    # Update boundary and change direction
-    _max -= 1
+    # Update boundary to last swap position (elements after are already sorted)
+    new_max = lastSwapPosForward + 1
     direction = decreasingDirection
 
-    # Early exit if sorted
-    if not swappedForward:
+    # Early exit if sorted (no swaps made)
+    if new_max <= _min:
       break
+    
+    _max = new_max
 
     # Backward pass - move in decreasing direction
-    for _ in range(_max - _min):
+    # Get current position
+    if orientation == ORIENTATION_LEFTRIGHT:
+      pos = get_pos_x()
+    else:
+      pos = get_pos_y()
+    
+    while pos > _min:
       measureSelf = measure()
       measureNext = measure(direction)
 
       if measureSelf != None and measureNext != None and measureSelf < measureNext:
         swap(direction)
-        swappedBackward = True
+        lastSwapPosBackward = pos
 
-      # Check if we've reached min boundary
+      move(direction)
+      
+      # Update position
       if orientation == ORIENTATION_LEFTRIGHT:
         pos = get_pos_x()
       else:
         pos = get_pos_y()
-      
-      if pos <= _min + 1:
-        break
 
-      move(direction)
-
-    # Update boundary and change direction
-    _min += 1
+    # Update boundary to last swap position (elements before are already sorted)
+    new_min = lastSwapPosBackward - 1
     direction = increasingDirection
 
-    # Early exit if sorted
-    if not swappedBackward:
+    # Early exit if sorted (no swaps made)
+    if new_min >= _max:
       break
+    
+    _min = new_min
 
 def dronePlant(startX, startY, length):
   utils.moveTo(startX, startY)
@@ -115,20 +125,33 @@ def spawnDrone(startX, startY, w, h):
 def main():
   w = get_world_size()
   h = get_world_size()
+  # w, h = 22,22
+  leaderboardMin = 33554432
 
   utils.moveTo(0, 0)
+  
   startItems = num_items(Items.Cactus)
   startTime = get_time()
+  totalHarvested = 0
+  totalRuns = 0
 
-  spawnDrone(0, 0, w, h)
+  while totalHarvested < leaderboardMin:
+    totalRuns += 1
+    startItems = num_items(Items.Cactus)
+    spawnDrone(0, 0, w, h)
+    partial = num_items(Items.Cactus) - startItems
+    totalHarvested += partial
 
   endTime = get_time()
-  endItems = num_items(Items.Cactus)
 
-  totalHarvested = endItems - startItems
+  # totalHarvested = endItems - startItems
   totalTime = endTime - startTime
 
-  quick_print("Harvested", totalHarvested, "in", totalTime, "seconds. Avg:", totalHarvested / totalTime, "per second")
+  quick_print("--")
+  quick_print("Runs: " + str(totalRuns))
+  quick_print("Harvested", totalHarvested, "in", totalTime, "seconds.")
+  quick_print("Avg:", totalHarvested / totalTime, "per second")
+  quick_print("Avg per run:", totalHarvested / totalRuns)
 
   
   # utils.moveTo(0, 4)

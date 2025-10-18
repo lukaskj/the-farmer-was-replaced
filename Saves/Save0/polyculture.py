@@ -1,15 +1,15 @@
 import utils
 import drones
 
-def _dronePolyculture(seed, startX, startY, width, height):
+def _dronePolyculture(seed, startX, startY, width, height, plotsPerDrone):
   crops = []
   sources = []  
 
-  middleX = (startX + ((width - 1) / 2)) // 1
-  middleY = (startY + ((height - 1) / 2)) // 1
+  middleX = utils.round((startX + ((width - 1) / 2)))
+  middleY = utils.round((startY + ((height - 1) / 2)))
   
   utils.moveTo(middleX, middleY)  
-  for i in range(5):
+  for i in range(plotsPerDrone):
     curPos = utils.getPos()
     sources.append(curPos)
 
@@ -53,17 +53,20 @@ def _dronePolyculture(seed, startX, startY, width, height):
       utils.waitFor(can_harvest)
     harvest()
 
-def __newDrone(seed, runs = 1):
+def __newDrone(seed, plotsPerDrone = 5, runs = 1):
   def __init(gridData):
     startX, startY, width, height = gridData
     def __():
       for _ in range(runs):
-        _dronePolyculture(seed, startX, startY, width, height)
+        _dronePolyculture(seed, startX, startY, width, height, plotsPerDrone)
     return __
   return __init
 
-def start(seed, w, h, runs = 1, maxDrones = None):
-  drones.spawnDronesInGrid(__newDrone(seed, runs), w, h, maxDrones)
+def start(seed, w, h, runs = 1, maxDrones = None, plotsPerDrone = 5):
+  shouldExecuteLastAsMainDrone, lastGrid, _ = drones.spawnDronesInGrid(__newDrone(seed, plotsPerDrone, runs), w, h, maxDrones)
+  if shouldExecuteLastAsMainDrone:
+    __newDrone(seed, plotsPerDrone, runs)(lastGrid)()
+
   
 
 def _exec():
@@ -72,6 +75,7 @@ def _exec():
   global width
   global height
   global runs
+  global plotsPerDrone
 
   clear()
   utils.moveTo(0, 0)
@@ -80,19 +84,51 @@ def _exec():
   startAmount = num_items(item)
   startTime = get_time()
 
-  start(seed, width, height, runs, maxDrones)
+  start(seed, width, height, runs, maxDrones, plotsPerDrone)
   drones.waitForAllDronesToFinish()
   
   endTime = get_time()
   endAmount = num_items(item)
-  quick_print("Harvested", endAmount - startAmount, "of", item, "from", seed, "in", endTime - startTime, "seconds and", runs, "runs")
-    
+
+  totalTime = endTime - startTime
+  totalAmount = endAmount - startAmount
+
+  utils.printReport(totalAmount, totalTime, item, runs)
+  quick_print("---")
+  quick_print("Harvested", totalAmount, "of", item, "from", seed, "in", totalTime, "seconds and", runs, "runs")
+  
+  # quick_print('"' + str(item)  + '"|"' + str(maxDrones)  + '"|"' + str(plotsPerDrone)  + '"|"' + str(totalAmount)  + '"|"' + str(totalTime)+ '"|"' + str(totalAmount / totalTime) + '"')
+
+def execAndReportMultiple():
+  global seed
+  global maxDrones
+  global width
+  global height
+  global runs
+  global plotsPerDrone
+
+  width = get_world_size()
+  height = get_world_size()
+  runs = 20
+  plotsPerDrone = 1
+  seedss = [Entities.Grass, Entities.Bush, Entities.Tree, Entities.Carrot]
+  for seeeed in seedss:
+    seed = seeeed
+    for plots in range(5):
+      plotsPerDrone = plots + 1
+      for d in range(32):
+        maxDrones = min(d + 1, max_drones())
+        _exec()
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
   seed = Entities.Carrot
-  runs = 1000
-  maxDrones = (max_drones() / 2) // 1
+  maxDrones = 32
+  plotsPerDrone = 5
+
+  runs = 100
+  # maxDrones = utils.round((max_drones() / 2))
+  # maxDrones = max_drones()
   width = get_world_size()
   height = get_world_size()
   # set_execution_speed(1)

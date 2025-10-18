@@ -308,3 +308,15 @@ def isInsideSubgrid(x, y, gridX, gridY, width, height):
 
 def round(floatN):
   return floatN // 1
+
+def printReport(totalAmount, totalTime, entityOrItem = None, runs = None):
+  quick_print("--")
+  if runs != None and runs > 1:
+    quick_print("Runs: " + str(runs))
+  if entityOrItem != None:
+    quick_print("Harvested", totalAmount, "of", entityOrItem, "in", totalTime, "seconds.")
+  else:
+    quick_print("Harvested", totalAmount, "in", totalTime, "seconds.")
+  quick_print("Avg:", totalAmount / totalTime, "per second")
+  if runs != None and runs > 1:
+    quick_print("Avg per run:", totalAmount / runs)
