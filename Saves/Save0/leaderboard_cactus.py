@@ -77,8 +77,8 @@ def _sort_line_two_way(startPos, maxLen, orientation = ORIENTATION_LEFTRIGHT):
 def dronePlant(startX, startY, length):
   utils.moveTo(startX, startY)
   for y in range(length):
-    if y != startY:
-      utils.moveTo(startX, y)
+    if startY + y != startY:
+      utils.moveTo(startX, startY + y)
     utils.plantSeed(Entities.Cactus)
     measureSelf = measure()
     measureSouth = measure(South)
@@ -94,16 +94,20 @@ def sortRows(startX, startY, length):
   _sort_line_two_way(startX, length, ORIENTATION_LEFTRIGHT)
 
 
-def spawnDrone(w, h):
+def spawnDrone(startX, startY, w, h):
+  droneId = None
   for x in range(w):
-    droneId = drones.spawnDrone(drones.wrapper(dronePlant, x, 0, h))
-  dronePlant(w - 1, 0, h)
+    droneId = drones.spawnDrone(drones.wrapper(dronePlant, startX + x, startY, h))
+  if droneId == None and num_drones() == w:
+    dronePlant(w - 1, startY, h)
   drones.waitForAllDronesToFinish()
 
   # Sort rows
   for y in range(h):
-    drones.spawnDrone(drones.wrapper(sortRows, 0, y, w))
-  sortRows(0, h - 1, w)
+    droneId = drones.spawnDrone(drones.wrapper(sortRows, startX, startY + y, w))
+  if droneId == None and num_drones() == max_drones():
+    sortRows(startX, startY + h - 1, w)
+  utils.moveTo(startX, startY)
   drones.waitForAllDronesToFinish()
   harvest()
 
@@ -113,9 +117,20 @@ def main():
   h = get_world_size()
 
   utils.moveTo(0, 0)
+  startItems = num_items(Items.Cactus)
+  startTime = get_time()
 
-  # spawnDrones(w, h)
-  spawnDrone(w, h)
+  spawnDrone(0, 0, w, h)
+
+  endTime = get_time()
+  endItems = num_items(Items.Cactus)
+
+  totalHarvested = endItems - startItems
+  totalTime = endTime - startTime
+
+  quick_print("Harvested", totalHarvested, "in", totalTime, "seconds. Avg:", totalHarvested / totalTime, "per second")
+
+  
   # utils.moveTo(0, 4)
 
 if __name__ == "__main__":
