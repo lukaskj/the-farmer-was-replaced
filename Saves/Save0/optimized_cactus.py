@@ -5,12 +5,15 @@ from globals import ORIENTATION_UPDOWN, ORIENTATION_LEFTRIGHT
 def _drone_plant_and_sort_cols(maxX, maxY, startX, startY):
   seed = Entities.Cactus
   def run():
+    # rowData = []
     for _ in range(maxX * maxY):
       
       utils.plantSeed(seed)
+      # rowData.append(measure())
 
       utils.moveToNextSubgridPos(startX, startY, maxX, maxY)
     
+    # utils.sort(rowData)
     utils.moveTo(startX, startY)
     _sort_line_two_way(startY, maxY, ORIENTATION_UPDOWN)
         

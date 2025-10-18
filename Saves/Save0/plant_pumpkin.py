@@ -102,7 +102,7 @@ def _exec():
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
 
-  leaderboardMin = 20000000
+  leaderboardMin = 200000000
   # leaderboardMin = 200000000
   runs = 1
   maxDrones = max_drones()

@@ -69,6 +69,13 @@ def waitForIdleDroneAndReturnId(maxDrones = None):
 
 def waitForAllDronesToFinish():
   global _drones
+  for drone in _drones:
+    wait_for(drone)  
+  _drones = []
+  return True
+
+def waitForAllDronesToFinishOld():
+  global _drones
   def fnc():
     totalFinished = 0
     for drone in _drones:

@@ -3,4 +3,5 @@ import optimized_cactus
 
 scriptName = "optimized_cactus"
 scriptName = "plant_pumpkin"
-leaderboard_run(Leaderboards.Pumpkins, scriptName, 1000)
+scriptName = "leaderboard_cactus"
+leaderboard_run(Leaderboards.Cactus, scriptName, 60*60*60)
