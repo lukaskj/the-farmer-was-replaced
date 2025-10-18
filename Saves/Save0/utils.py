@@ -309,6 +309,33 @@ def isInsideSubgrid(x, y, gridX, gridY, width, height):
 def round(floatN):
   return floatN // 1
 
+
+##### REPORTS #####
+
+_reports = {}
+def reportStart(item, runs = None, id = "total"):
+  _reports[id] = {
+    "item": item,
+    "runs": runs,
+    "startTime": get_time(),
+    "startItems": num_items(item)
+  }
+
+def reportEnd(id = "total"):
+  if not id in _reports:
+    quick_print("Not found")
+    return False
+  _reports[id]["endTime"] = get_time()
+  _reports[id]["endItems"] = num_items(_reports[id]["item"])
+  _reports[id]["totalTime"] = _reports[id]["endTime"] - _reports[id]["startTime"]
+  _reports[id]["totalItems"] = _reports[id]["endItems"] - _reports[id]["startItems"]
+  printReport(_reports[id]["totalItems"], _reports[id]["totalTime"], _reports[id]["item"], _reports[id]["runs"])
+
+  return _reports[id]
+
+
+
+
 def printReport(totalAmount, totalTime, entityOrItem = None, runs = None):
   quick_print("--")
   if runs != None and runs > 1:
