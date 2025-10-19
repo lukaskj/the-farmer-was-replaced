@@ -240,7 +240,7 @@ def moveToNextSubgridPosSimple(gridCoords):
   startX, startY, subgridWidth, subgridHeight = gridCoords
   return moveToNextSubgridPos(startX, startY, subgridWidth, subgridHeight)
 
-def moveToNextSubgridPos(startX, startY, subgridWidth, subgridHeight):
+def moveToNextSubgridPos(startX, startY, subgridWidth, subgridHeight, debug = False):
   nextX, nextY = getNextSubgridPos(startX, startY, subgridWidth, subgridHeight)
   moveTo(nextX, nextY)
   return nextX, nextY
@@ -323,7 +323,7 @@ def reportStart(item, runs = None, id = "total"):
 
 def reportEnd(id = "total"):
   if not id in _reports:
-    quick_print("Not found")
+    quick_print("[Report] Not found")
     return False
   _reports[id]["endTime"] = get_time()
   _reports[id]["endItems"] = num_items(_reports[id]["item"])
@@ -334,8 +334,6 @@ def reportEnd(id = "total"):
   return _reports[id]
 
 
-
-
 def printReport(totalAmount, totalTime, entityOrItem = None, runs = None):
   quick_print("--")
   if runs != None and runs > 1:
@@ -344,6 +342,24 @@ def printReport(totalAmount, totalTime, entityOrItem = None, runs = None):
     quick_print("Harvested", totalAmount, "of", entityOrItem, "in", totalTime, "seconds.")
   else:
     quick_print("Harvested", totalAmount, "in", totalTime, "seconds.")
-  quick_print("Avg:", totalAmount / totalTime, "per second")
+  quick_print("Avg:", totalAmount / totalTime, "per second", "(" + str((totalAmount / totalTime) * 60) + " per minute)")
   if runs != None and runs > 1:
     quick_print("Avg per run:", totalAmount / runs)
+
+def reportFncStart(fnc, label, id = "fncReport"):
+  _reports["__fnc_" + id] = {
+    "fnc": fnc,
+    "start": fnc(),
+    "label": label
+  }
+
+# 40 ticks total - start to end
+def reportFncEnd(id = "fncReport"):
+  realId = "__fnc_" + id
+  if not realId in _reports:
+    quick_print("[Report FNC] Not found")
+    return False
+  _reports[realId]["end"] = _reports[realId]["fnc"]()
+  _reports[realId]["total"] = _reports[realId]["end"] - _reports[realId]["start"]
+  label = _reports[realId]["label"]
+  quick_print(label + ":", _reports[realId]["total"])

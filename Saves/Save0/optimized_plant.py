@@ -2,7 +2,9 @@ import utils
 import drones
 
 def start(seed, w, h, runs = 1, maxDrones = None):
-  drones.spawnDronesInGrid(__newDrone(seed, runs), w, h, maxDrones)
+  shouldExecuteAsMainDrone, lastGrid, _ = drones.spawnDronesInGrid(__newDrone(seed, runs), w, h, maxDrones)
+  if shouldExecuteAsMainDrone:
+    __newDrone(seed, runs)(lastGrid)()
 
 def __newDrone(seed, runs = 1):
   def __init(coords):
@@ -18,7 +20,6 @@ def _loop_grid(seed, startX, startY, width, height):
   notHarvested = []
   
   for _ in range(width * height):
-    nextX, nextY = utils.getNextSubgridPos(startX, startY, width, height)
     if can_harvest():
       harvest()
     if seed == Entities.Bush:
@@ -31,7 +32,8 @@ def _loop_grid(seed, startX, startY, width, height):
       utils.plantSeed(seed)
     if (seed == Entities.Sunflower or seed == Entities.Bush or seed == Entities.Tree) and utils.canUseWater(width * height):
       use_item(Items.Water)
-    utils.moveTo(nextX, nextY)
+    
+    utils.moveToNextSubgridPos(startX, startY, width, height)
 
   harvestedTotal = 0
   toHarvestTotal = width * height
@@ -69,19 +71,19 @@ def _exec():
   clear()
   utils.moveTo(0, 0)
 
-  item = utils.seedToItem(seed)
-  startAmount = num_items(item)
+  item = utils.seedToItem(seed)  
 
-  start(seed, width, height, runs, None)  
+  utils.reportStart(item, runs)
+  start(seed, width, height, runs, maxDrones)  
   drones.waitForAllDronesToFinish()
 
-  endAmount = num_items(item)
-  quick_print("Harvested", endAmount - startAmount, "of", item)
+  utils.reportEnd()  
+  
 
 if __name__ == "__main__":
   quick_print("### DISABLE FOR SIMULATION ###")
-  seed = Entities.Sunflower
-  runs = 1500
+  seed = Entities.Carrot
+  runs = 20
   maxDrones = max_drones()
   width = get_world_size()
   height = get_world_size()

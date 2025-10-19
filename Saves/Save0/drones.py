@@ -12,6 +12,9 @@ def spawnDronesInGrid(fnc, width, height, maxDrones = None):
     maxDrones = max_drones()
   maxDrones = min(maxDrones, min(width, height))
 
+  middleX, middleY = utils.round(width / 2), utils.round(height / 2)
+  utils.moveTo(middleX, middleY)
+
   grids = utils.calculateSubgrids(width, height, maxDrones)
   i = 0
   droneToCoords = {}
